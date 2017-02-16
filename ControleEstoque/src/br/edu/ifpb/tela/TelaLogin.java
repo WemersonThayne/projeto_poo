@@ -99,7 +99,7 @@ public class TelaLogin {
 		btnEntrar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				btnEntrar.setText("Entrando...");
+				btnEntrar.setText("Carregando...");
 				JOptionPane.showMessageDialog(null, "Login: "+ txtLogin.getText() );
 				//TODO: chamar servico de login
 				frmLogin.dispose(); //Destroy the JFrame object
@@ -110,7 +110,7 @@ public class TelaLogin {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frmLogin.dispose(); //Destroy the JFrame object
-				CadastroUsuario.main(null);
+				TelaCadastroUsuario.main(null);
 			}
 		});
 	}
