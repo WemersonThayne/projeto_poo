@@ -19,6 +19,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.exceptions.ControleEstoqueException;
+import br.edu.ifpb.utils.Mensagens;
+import br.edu.ifpb.utils.Util;
+
 public class TelaLogin {
 
 	private JFrame frmLogin;
@@ -75,11 +79,11 @@ public class TelaLogin {
 						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, }));
 
 		lblLogin = new JLabel("Login:");
-		frmLogin.getContentPane().add(lblLogin, "4, 6, right, default");
+		frmLogin.getContentPane().add(lblLogin, "4, 6, left, default");
 
 		txtLogin = new JTextField();
 		txtLogin.setHorizontalAlignment(SwingConstants.LEFT);
-		frmLogin.getContentPane().add(txtLogin, "6, 6, 2, 1, left, center");
+		frmLogin.getContentPane().add(txtLogin, "6, 6, 3, 1, fill, center");
 		txtLogin.setColumns(20);
 
 		lblSenha = new JLabel("Senha:");
@@ -90,19 +94,22 @@ public class TelaLogin {
 		frmLogin.getContentPane().add(pwdSenha, "6, 8, 3, 1, fill, center");
 
 		btnEntrar = new JButton("Entrar");
-		frmLogin.getContentPane().add(btnEntrar, "8, 10, fill, center");
+		frmLogin.getContentPane().add(btnEntrar, "4, 10, 5, 1, fill, center");
 
 		btnCadastro = new JButton("Cadastro");
-		frmLogin.getContentPane().add(btnCadastro, "8, 12, fill, center");
+		frmLogin.getContentPane().add(btnCadastro, "4, 12, 5, 1, fill, center");
 
 		// REGISTRA O EVENTO
 		btnEntrar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				btnEntrar.setText("Carregando...");
-				JOptionPane.showMessageDialog(null, "Login: "+ txtLogin.getText() );
-				//TODO: chamar servico de login
-				frmLogin.dispose(); //Destroy the JFrame object
+				try {
+					chamarTelaPrincipal();
+				} catch (ControleEstoqueException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -115,4 +122,16 @@ public class TelaLogin {
 		});
 	}
 
+	private void chamarTelaPrincipal() throws ControleEstoqueException {
+		
+		if(Util.validarCampos(txtLogin) && Util.validarCamposSenha(pwdSenha)){
+			//TODO: chamar servico de login
+			frmLogin.dispose(); //Destroy the JFrame object
+			//TODO:escolher a tela ou de funcionario ou de fornecedor
+			TelaFuncionario.main(null);
+		}else{
+			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
+			btnEntrar.setText("Entrar");
+		}
+	}
 }

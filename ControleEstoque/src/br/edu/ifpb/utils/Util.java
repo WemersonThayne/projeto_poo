@@ -1,14 +1,24 @@
 package br.edu.ifpb.utils;
 
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 public  class  Util {
 
-	/*public static int menuPrincipal(){
-		
-		System.out.println(" --- Bem vindo ao sistema ---");
-		System.out.println("   1 - LOGIN ");
-		System.out.println("   2 - CADASTRO ");
-		System.out.println("   0 - SAIR ");
-		Scanner sc = new Scanner(System.in);
-		return sc.nextInt();
-	}*/
+	public static String 	VALOR_INSERIDOS_INVALIDOS = "Valores Inválidos!";
+	
+	public static boolean validarCampos(JTextField campo){
+		if(campo.getText().length() == 0){
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean validarCamposSenha(JPasswordField campo){
+		if(campo.getPassword().length == 0){
+			return false;
+		}
+		return true;
+	}
+	
 }

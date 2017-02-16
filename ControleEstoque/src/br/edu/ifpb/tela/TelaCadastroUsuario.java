@@ -80,7 +80,7 @@ public class TelaCadastroUsuario  {
 	private void initialize() {
 		frmCadastroDeUsurio = new JFrame();
 		frmCadastroDeUsurio.setTitle("Cadastro de Usu\u00E1rio");
-		frmCadastroDeUsurio.setBounds(100, 100, 510, 455);
+		frmCadastroDeUsurio.setBounds(100, 100, 532, 465);
 		frmCadastroDeUsurio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCadastroDeUsurio.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -92,6 +92,8 @@ public class TelaCadastroUsuario  {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -229,16 +231,12 @@ public class TelaCadastroUsuario  {
 		btnConfirmar.addActionListener(new ActionListener() {
 		      public void actionPerformed(ActionEvent e) {
 		    	  if (roda == null) {
+		    		  progressBar.setVisible(true);
                       roda = new roda();
                       roda.start(); 
                     }
 		      }});
-		
-		progressBar = new JProgressBar();
-	    progressBar.setStringPainted(true);
-	    
-		frmCadastroDeUsurio.getContentPane().add(progressBar, "6, 32");
-		frmCadastroDeUsurio.getContentPane().add(btnConfirmar, "6, 34");
+		frmCadastroDeUsurio.getContentPane().add(btnConfirmar, "6, 32");
 		
 		btnLimpar = new JButton("Limpar");
 		//chamar e execulta o metodo limparCampos
@@ -250,7 +248,13 @@ public class TelaCadastroUsuario  {
                    
 		}});
 		
-		frmCadastroDeUsurio.getContentPane().add(btnLimpar, "6, 36");
+		frmCadastroDeUsurio.getContentPane().add(btnLimpar, "6, 34");
+		
+		progressBar = new JProgressBar();
+		progressBar.setStringPainted(true);
+		progressBar.setVisible(false);
+		
+		frmCadastroDeUsurio.getContentPane().add(progressBar, "6, 36");
 		
 		//TODOS OS ITENS RELACIONADOS A TIPO DA PESSOA INVISIVEIS
 		lblNewLabel_5Matricula.setVisible(false);
@@ -344,11 +348,11 @@ public class TelaCadastroUsuario  {
 		          progressBar.setValue(valor+1);
 		        }
 		      };
-		      for (int i = 0; i <= 100; i++) {
+		      for (int i = 0; i <= 2000; i++) {
 		        // ---------------------------------
 		        // Faça aqui o processo a realizar
 		        // ---------------------------------
-		    	  if(i == 100){
+		    	  if(i == 2000){
 		    		  frmCadastroDeUsurio.dispose();
 		              JOptionPane.showMessageDialog(null, "Cadastro Efetuado com Sucesso...");
 		              TelaLogin.main(null); 
