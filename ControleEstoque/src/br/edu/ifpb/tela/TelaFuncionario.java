@@ -1,17 +1,25 @@
 package br.edu.ifpb.tela;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
-public class TelaFuncionario {
+public class TelaFuncionario{
 
 	private JFrame frmFuncionario;
-
+	private JPanel panelPrincipal; 
+	private TelaCadastroProduto cadastroPainel;
+	
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -44,6 +52,12 @@ public class TelaFuncionario {
 		frmFuncionario.setBounds(100, 100, 450, 300);
 		frmFuncionario.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmFuncionario.getContentPane().setLayout(new BoxLayout(frmFuncionario.getContentPane(), BoxLayout.X_AXIS));
+		
+		panelPrincipal = new JPanel();
+		frmFuncionario.getContentPane().add(panelPrincipal);
+		
+		JLabel lblCadastroProduto = new JLabel("Bem Vindo ao Sistema de Estoque");
+		panelPrincipal.add(lblCadastroProduto);
 		
 		//Menu de produto
 		JMenuBar menuBar= new JMenuBar();
@@ -96,7 +110,29 @@ public class TelaFuncionario {
         relatorio.add(relatorioProdutos);
         relatorio.add(relatorioPedidos);
        
-        //FIM DOS MENUS 
+        //FIM DOS MENUS
+        abrirCadatroProduto(cadastroProduto);
 	}
 
+	public void abrirCadatroProduto(JMenuItem cadastroProduto){
+		
+		cadastroProduto.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  cadastroPainel = new TelaCadastroProduto();
+	    		  frmFuncionario.getContentPane().removeAll();
+	    		  frmFuncionario.setContentPane(cadastroPainel);
+	    		  frmFuncionario.setResizable(false);
+	    		  //Centraliza na tela
+	    		  frmFuncionario.setLocationRelativeTo(null);
+	    		  
+	    		  panelPrincipal = cadastroPainel;
+	    		  
+	    		  frmFuncionario.getContentPane().add(panelPrincipal);
+	    	      frmFuncionario.revalidate();
+	    	      frmFuncionario.repaint();
+	    	      
+	}});
+		
+	}
 }

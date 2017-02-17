@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -128,7 +127,7 @@ public class TelaLogin {
 			//TODO: chamar servico de login
 			frmLogin.dispose(); //Destroy the JFrame object
 			//TODO:escolher a tela ou de funcionario ou de fornecedor
-			TelaFuncionario.main(null);
+			new TelaFuncionario();
 		}else{
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			btnEntrar.setText("Entrar");
