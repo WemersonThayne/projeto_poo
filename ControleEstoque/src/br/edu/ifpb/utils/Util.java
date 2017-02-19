@@ -6,6 +6,7 @@ import javax.swing.JTextField;
 public  class  Util {
 
 	public static String 	VALOR_INSERIDOS_INVALIDOS = "Valores Inválidos!";
+	public static String 	LOGIN_MENSAGEM = "Bem Vindo(a): ";
 	
 	public static boolean validarCampos(JTextField campo){
 		if(campo.getText().length() == 0){

@@ -1,4 +1,4 @@
-package br.edu.ifpb.tela;
+package br.edu.ifpb.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -20,7 +20,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class TelaCadastroUsuario  {
+public class CadastroUsuarioFrame  {
 
 	private JFrame frmCadastroDeUsurio;
 	private JTextField textFieldNomeCompleto;
@@ -58,7 +58,7 @@ public class TelaCadastroUsuario  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaCadastroUsuario window = new TelaCadastroUsuario();
+					CadastroUsuarioFrame window = new CadastroUsuarioFrame();
 					window.frmCadastroDeUsurio.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,7 +70,7 @@ public class TelaCadastroUsuario  {
 	/*
 	 * Create the application.
 	 */
-	public TelaCadastroUsuario() {
+	public CadastroUsuarioFrame() {
 		initialize();
 	}
 
@@ -355,7 +355,7 @@ public class TelaCadastroUsuario  {
 		    	  if(i == 2000){
 		    		  frmCadastroDeUsurio.dispose();
 		              JOptionPane.showMessageDialog(null, "Cadastro Efetuado com Sucesso...");
-		              TelaLogin.main(null); 
+		              LoginFrame.main(null); 
 		    	  }
 		    	  
 		        // Atualiza a Barra de Progresso

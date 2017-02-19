@@ -1,4 +1,4 @@
-package br.edu.ifpb.tela;
+package br.edu.ifpb.frames;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -22,7 +22,7 @@ import br.edu.ifpb.exceptions.ControleEstoqueException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
-public class TelaLogin {
+public class LoginFrame {
 
 	private JFrame frmLogin;
 	private JTextField txtLogin;
@@ -39,7 +39,7 @@ public class TelaLogin {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaLogin window = new TelaLogin();
+					LoginFrame window = new LoginFrame();
 					window.frmLogin.setVisible(true);
 
 				} catch (Exception e) {
@@ -52,7 +52,7 @@ public class TelaLogin {
 	/**
 	 * Create the application.
 	 */
-	public TelaLogin() {
+	public LoginFrame() {
 		initialize();
 	}
 
@@ -116,7 +116,7 @@ public class TelaLogin {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frmLogin.dispose(); //Destroy the JFrame object
-				TelaCadastroUsuario.main(null);
+				CadastroUsuarioFrame.main(null);
 			}
 		});
 	}
@@ -127,7 +127,8 @@ public class TelaLogin {
 			//TODO: chamar servico de login
 			frmLogin.dispose(); //Destroy the JFrame object
 			//TODO:escolher a tela ou de funcionario ou de fornecedor
-			new TelaFuncionario();
+			new Mensagens(Util.LOGIN_MENSAGEM + txtLogin.getText());
+			FuncionarioFrame.main(null);;
 		}else{
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			btnEntrar.setText("Entrar");

@@ -1,10 +1,11 @@
-package br.edu.ifpb.tela;
+package br.edu.ifpb.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -12,11 +13,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-public class TelaFuncionario{
+import br.edu.ifpb.frames.dialogs.CadastroProdutoDialog;
+import br.edu.ifpb.frames.dialogs.ConsultaProdutoDialog;
+import br.edu.ifpb.frames.dialogs.FazerPedidoDialog;
+
+public class FuncionarioFrame{
 
 	private JFrame frmFuncionario;
 	private JPanel panelPrincipal; 
-	private TelaCadastroProduto cadastroPainel;
+	private CadastroProdutoDialog cadastroProdutoDialog;
+	private ConsultaProdutoDialog consultaProdutoDialog;
+	private FazerPedidoDialog     cadastroPedidoDialog;
 	
 	
 	
@@ -27,7 +34,7 @@ public class TelaFuncionario{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaFuncionario window = new TelaFuncionario();
+					FuncionarioFrame window = new FuncionarioFrame();
 					window.frmFuncionario.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -39,7 +46,7 @@ public class TelaFuncionario{
 	/**
 	 * Create the application.
 	 */
-	public TelaFuncionario() {
+	public FuncionarioFrame() {
 		initialize();
 	}
 
@@ -112,27 +119,46 @@ public class TelaFuncionario{
        
         //FIM DOS MENUS
         abrirCadatroProduto(cadastroProduto);
+        abrirConsultaProduto(consultaProduto);
+        abrirCadastroPedido(cadastroPedido);
 	}
 
-	public void abrirCadatroProduto(JMenuItem cadastroProduto){
-		
+	private void abrirCadatroProduto(JMenuItem cadastroProduto){
 		cadastroProduto.addActionListener(new ActionListener() {
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		  
-	    		  cadastroPainel = new TelaCadastroProduto();
-	    		  frmFuncionario.getContentPane().removeAll();
-	    		  frmFuncionario.setContentPane(cadastroPainel);
-	    		  frmFuncionario.setResizable(false);
-	    		  //Centraliza na tela
-	    		  frmFuncionario.setLocationRelativeTo(null);
-	    		  
-	    		  panelPrincipal = cadastroPainel;
-	    		  
-	    		  frmFuncionario.getContentPane().add(panelPrincipal);
-	    	      frmFuncionario.revalidate();
-	    	      frmFuncionario.repaint();
-	    	      
+	    		  cadastroProdutoDialog = new CadastroProdutoDialog(frmFuncionario);
+	    		  cadastroProdutoDialog.setBounds(100, 100, 450, 300);
+	    		  cadastroProdutoDialog.setTitle("Cadastro de Produtos");
+	    		  cadastroProdutoDialog.setLocationRelativeTo(null);
+	    		  cadastroProdutoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  cadastroProdutoDialog.setVisible(true);
 	}});
-		
+	}
+	
+	private void abrirConsultaProduto(JMenuItem consultarProduto){
+		consultarProduto.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  consultaProdutoDialog = new ConsultaProdutoDialog(frmFuncionario);
+	    		  consultaProdutoDialog.setBounds(100, 100, 450, 300);
+	    		  consultaProdutoDialog.setTitle("Consultas de Produtos");
+	    		  consultaProdutoDialog.setLocationRelativeTo(null);
+	    		  consultaProdutoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  consultaProdutoDialog.setVisible(true);
+	}});
+	}
+	
+	private void abrirCadastroPedido(JMenuItem cadastroPedido){
+		cadastroPedido.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  cadastroPedidoDialog = new FazerPedidoDialog(frmFuncionario);
+	    		  cadastroPedidoDialog.setBounds(100, 100, 450, 300);
+	    		  cadastroPedidoDialog.setTitle("Fazer Pedido de Produtos");
+	    		  cadastroPedidoDialog.setLocationRelativeTo(null);
+	    		  cadastroPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  cadastroPedidoDialog.setVisible(true);
+	}});
 	}
 }

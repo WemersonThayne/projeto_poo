@@ -1,4 +1,4 @@
-package br.edu.ifpb.tela;
+package br.edu.ifpb.frames;
 
 import java.awt.EventQueue;
 
@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-public class TelaFornecedor {
+public class FornecedorFrame {
 
 	private JFrame frame;
 
@@ -18,7 +18,7 @@ public class TelaFornecedor {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaFornecedor window = new TelaFornecedor();
+					FornecedorFrame window = new FornecedorFrame();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -30,7 +30,7 @@ public class TelaFornecedor {
 	/**
 	 * Create the application.
 	 */
-	public TelaFornecedor() {
+	public FornecedorFrame() {
 		initialize();
 	}
 

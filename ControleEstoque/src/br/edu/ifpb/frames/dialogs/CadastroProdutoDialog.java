@@ -1,4 +1,4 @@
-package br.edu.ifpb.tela;
+package br.edu.ifpb.frames.dialogs;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -16,12 +16,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class TelaCadastroProduto  extends javax.swing.JPanel  {
-
-	//private JFrame funcionario;
+public class CadastroProdutoDialog  extends javax.swing.JDialog{
 
 	/**
-	 * 
+	 * cadastro de produto 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldNomeProduto;
@@ -32,16 +30,10 @@ public class TelaCadastroProduto  extends javax.swing.JPanel  {
 	/**
 	 * Create the application.
 	 */
-	public TelaCadastroProduto( ) {
-		TelaCadastroProduto.setDefaultLocale(getLocale());
+	public CadastroProdutoDialog(JFrame frame) {
+		super(frame, true);
 		initialize();
 	}
-
-	/*public CadastroProdutoPainel(JFrame func) {
-        this();
-        this.funcionario = func;
-        initialize();	
-    }*/
 
 	/**
 	 * Initialize the contents of the frame.
@@ -108,7 +100,7 @@ public class TelaCadastroProduto  extends javax.swing.JPanel  {
 		JLabel lblCategoria = new JLabel("Categoria:");
 		add(lblCategoria, "3, 12, left, default");
 		
-		JComboBox<String> comboBoxCategoria = new JComboBox();
+		JComboBox<String> comboBoxCategoria = new JComboBox<String>();
 		add(comboBoxCategoria, "4, 12, fill, default");
 		
 		btnNewButtonNovo = new JButton("Novo Produto");
@@ -123,19 +115,12 @@ public class TelaCadastroProduto  extends javax.swing.JPanel  {
 			}
 		});
 		add(btnNewButtonLimpar, "6, 14, center, default");
-		
+		//TODO: chamar o serviço de categorias
 		String[] categoria = {"Selecione...","Categoria1", "Categoria2"};
 		comboBoxCategoria.addItem(categoria[0]);
 		comboBoxCategoria.addItem(categoria[1]);
 		comboBoxCategoria.addItem(categoria[2]);
-		mudarPainel();
+		
 	}
 	
-	private void mudarPainel(){
-		
-		//System.out.println("this.funcionario.getJMenuBar().getName():"+this.funcionario.getJMenuBar().getName());
-		 //this.funcionario.setContentPane();
-	     //this.funcionario.setVisible(true);
-	}
-
 }
