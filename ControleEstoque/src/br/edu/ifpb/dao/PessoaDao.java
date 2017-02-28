@@ -2,6 +2,16 @@ package br.edu.ifpb.dao;
 
 public class PessoaDao {
 
+	/*
+	 * 
+	 * 
+	private final String INSERT = "INSERT INTO CONTATO (NOME, TELEFONE, EMAIL) VALUES (?,?,?)";
+	private final String UPDATE = "UPDATE CONTATO SET NOME=?, TELEFONE=?, EMAIL=? WHERE ID=?";
+	private final String DELETE = "DELETE FROM CONTATO WHERE ID =?";
+	private final String LIST = "SELECT * FROM CONTATO";
+	private final String LISTBYID = "SELECT * FROM CONTATO WHERE ID=?";
+	 * 
+	 * */	
 	/*static DBPool banco;
 	private static CategoriaDAO instance;
 

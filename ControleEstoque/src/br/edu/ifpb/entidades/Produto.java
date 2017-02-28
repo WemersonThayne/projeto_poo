@@ -5,16 +5,18 @@ public class Produto {
 	private int codProduto;
 	private String nome;
 	private double valorUnitario;
+	private int quantideAtual;
 	private CategoriaProduto categoria;
 	
 	public Produto(){
 	}
 	
-	public Produto(int cod, String nome, double valor, CategoriaProduto categoria){
+	public Produto(int cod, String nome, double valor, CategoriaProduto categoria,int quant){
 		setCategoria(categoria);
 		setCodProduto(cod);
 		setNome(nome);
 		setValorUnitario(valor);
+		setQuantideAtual(quant);
 	}
 	
 	public int getCodProduto() {
@@ -41,10 +43,19 @@ public class Produto {
 	public void setCategoria(CategoriaProduto categoria) {
 		this.categoria = categoria;
 	}
+	
+	public int getQuantideAtual() {
+		return quantideAtual;
+	}
+
+	public void setQuantideAtual(int quantideAtual) {
+		this.quantideAtual = quantideAtual;
+	}
+
 	@Override
 	public String toString() {
 		return "Produto [codProduto=" + codProduto + ", nome=" + nome + ", valorUnitario=" + valorUnitario
-				+ ", categoria=" + categoria + "]";
+				+ ", quantideAtual=" + quantideAtual + ", categoria=" + categoria + "]";
 	}
-	
+
 }

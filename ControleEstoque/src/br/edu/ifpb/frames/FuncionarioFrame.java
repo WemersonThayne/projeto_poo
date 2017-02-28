@@ -154,7 +154,7 @@ public class FuncionarioFrame{
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		  
 	    		  cadastroPedidoDialog = new FazerPedidoDialog(frmFuncionario);
-	    		  cadastroPedidoDialog.setBounds(100, 100, 450, 300);
+	    		  cadastroPedidoDialog.setBounds(100, 100, 600, 500);
 	    		  cadastroPedidoDialog.setTitle("Fazer Pedido de Produtos");
 	    		  cadastroPedidoDialog.setLocationRelativeTo(null);
 	    		  cadastroPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
