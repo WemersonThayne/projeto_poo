@@ -38,6 +38,7 @@ public class FuncionarioFrame{
 				try {
 					FuncionarioFrame window = new FuncionarioFrame();
 					window.frmFuncionario.setVisible(true);
+					window.frmFuncionario.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

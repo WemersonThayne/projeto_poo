@@ -19,6 +19,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.exceptions.ControleEstoqueException;
+import br.edu.ifpb.utils.ConnectionFactory;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
@@ -39,9 +40,10 @@ public class LoginFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					//new ConnectionFactory();
 					LoginFrame window = new LoginFrame();
 					window.frmLogin.setVisible(true);
-
+					window.frmLogin.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -128,7 +130,8 @@ public class LoginFrame {
 			frmLogin.dispose(); //Destroy the JFrame object
 			//TODO:escolher a tela ou de funcionario ou de fornecedor
 			new Mensagens(Util.LOGIN_MENSAGEM + txtLogin.getText());
-			FuncionarioFrame.main(null);;
+			//FuncionarioFrame.main(null);
+			FornecedorFrame.main(null);
 		}else{
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			btnEntrar.setText("Entrar");

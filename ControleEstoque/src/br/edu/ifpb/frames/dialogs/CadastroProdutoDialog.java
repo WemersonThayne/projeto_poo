@@ -25,7 +25,7 @@ public class CadastroProdutoDialog  extends javax.swing.JDialog{
 	private JTextField textFieldNomeProduto;
 	private JTextField textFieldValorUnitario;
 	private JTextField textFieldQuantidadeProduto;
-	private JButton btnNewButtonNovo;
+	private JButton btnNewButtonNovoProduto;
 
 	/**
 	 * Create the application.
@@ -39,7 +39,7 @@ public class CadastroProdutoDialog  extends javax.swing.JDialog{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		setLayout(new FormLayout(new ColumnSpec[] {
+		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.DEFAULT_COLSPEC,
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("113px"),
@@ -74,47 +74,47 @@ public class CadastroProdutoDialog  extends javax.swing.JDialog{
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCadastroProdutos.setBackground(Color.BLACK);
 		lblCadastroProdutos.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		add(lblCadastroProdutos, "4, 2, center, top");
+		getContentPane().add(lblCadastroProdutos, "4, 2, center, top");
 		
 		JLabel lblNewLabel = new JLabel("Produto:");
-		add(lblNewLabel, "3, 6, left, default");
+		getContentPane().add(lblNewLabel, "3, 6, left, default");
 		
 		textFieldNomeProduto = new JTextField();
-		add(textFieldNomeProduto, "4, 6, fill, default");
+		getContentPane().add(textFieldNomeProduto, "4, 6, fill, default");
 		textFieldNomeProduto.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Valor Unitario:");
-		add(lblNewLabel_1, "3, 8, left, default");
+		getContentPane().add(lblNewLabel_1, "3, 8, left, default");
 		
 		textFieldValorUnitario = new JTextField();
-		add(textFieldValorUnitario, "4, 8, left, default");
+		getContentPane().add(textFieldValorUnitario, "4, 8, left, default");
 		textFieldValorUnitario.setColumns(10);
 		
 		JLabel lblQuantidade = new JLabel("Quantidade:");
-		add(lblQuantidade, "3, 10, left, default");
+		getContentPane().add(lblQuantidade, "3, 10, left, default");
 		
 		textFieldQuantidadeProduto = new JTextField();
-		add(textFieldQuantidadeProduto, "4, 10, left, default");
+		getContentPane().add(textFieldQuantidadeProduto, "4, 10, left, default");
 		textFieldQuantidadeProduto.setColumns(10);
 		
 		JLabel lblCategoria = new JLabel("Categoria:");
-		add(lblCategoria, "3, 12, left, default");
+		getContentPane().add(lblCategoria, "3, 12, left, default");
 		
 		JComboBox<String> comboBoxCategoria = new JComboBox<String>();
-		add(comboBoxCategoria, "4, 12, fill, default");
+		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
 		
-		btnNewButtonNovo = new JButton("Novo Produto");
-		add(btnNewButtonNovo, "3, 14, center, default");
+		btnNewButtonNovoProduto = new JButton("Novo Produto");
+		getContentPane().add(btnNewButtonNovoProduto, "3, 14, center, default");
 		
 		JButton btnNewButtonSalvar = new JButton("Salvar");
-		add(btnNewButtonSalvar, "4, 14, center, default");
+		getContentPane().add(btnNewButtonSalvar, "4, 14, center, default");
 		
 		JButton btnNewButtonLimpar = new JButton("Limpar");
 		btnNewButtonLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		add(btnNewButtonLimpar, "6, 14, center, default");
+		getContentPane().add(btnNewButtonLimpar, "6, 14, center, default");
 		//TODO: chamar o serviço de categorias
 		String[] categoria = {"Selecione...","Categoria1", "Categoria2"};
 		comboBoxCategoria.addItem(categoria[0]);

@@ -27,7 +27,6 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.entidades.CategoriaProduto;
 import br.edu.ifpb.entidades.Produto;
-import br.edu.ifpb.frames.CadastroUsuarioFrame;
 import br.edu.ifpb.utils.Mensagens;
 
 public class FazerPedidoDialog  extends JDialog{

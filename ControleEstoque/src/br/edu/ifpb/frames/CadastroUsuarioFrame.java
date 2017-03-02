@@ -60,6 +60,7 @@ public class CadastroUsuarioFrame  {
 				try {
 					CadastroUsuarioFrame window = new CadastroUsuarioFrame();
 					window.frmCadastroDeUsurio.setVisible(true);
+					window.frmCadastroDeUsurio.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
