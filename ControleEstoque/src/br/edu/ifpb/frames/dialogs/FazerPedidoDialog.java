@@ -28,6 +28,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import br.edu.ifpb.entidades.CategoriaProduto;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.frames.CadastroUsuarioFrame;
+import br.edu.ifpb.utils.Mensagens;
 
 public class FazerPedidoDialog  extends JDialog{
 
@@ -228,9 +229,15 @@ public class FazerPedidoDialog  extends JDialog{
     	produto.setQuantideAtual(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
     	produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString()));
     	produto.setCategoria(new CategoriaProduto());
-    	
-    	produtos.add(produto);
-    	
+
+		System.out.println(produtos.contains(produto));
+		
+		if(produtos.contains(produto)){
+	    	new Mensagens("Produto já adicionado na lista");
+	    }else{
+	        produtos.add(produto);
+	    }
+			
     	textFieldNomeProdutoEscolhido.setText("");
 		textFieldValorUnitario.setText("");
 		textFieldQuantidadeProduto.setText("");
@@ -241,7 +248,7 @@ public class FazerPedidoDialog  extends JDialog{
 		btnAdicinarProduto.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-		    	int result = JOptionPane.showConfirmDialog(null,"Deseja Incluir esse produto? "+table.getModel().getValueAt(linha, 0).toString(),"Incluir",JOptionPane.YES_NO_CANCEL_OPTION);   
+		    	int result = JOptionPane.showConfirmDialog(null,"Deseja Incluir esse produto?  "+table.getModel().getValueAt(linha, 0).toString(),"Incluir",JOptionPane.YES_NO_CANCEL_OPTION);   
 				  
 				if(result ==JOptionPane.YES_OPTION)  
 					montarListaPedido();

@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import br.edu.ifpb.frames.dialogs.CadastroProdutoDialog;
+import br.edu.ifpb.frames.dialogs.ConsultaPedidoDialog;
 import br.edu.ifpb.frames.dialogs.ConsultaProdutoDialog;
 import br.edu.ifpb.frames.dialogs.FazerPedidoDialog;
 
@@ -24,6 +25,7 @@ public class FuncionarioFrame{
 	private CadastroProdutoDialog cadastroProdutoDialog;
 	private ConsultaProdutoDialog consultaProdutoDialog;
 	private FazerPedidoDialog     cadastroPedidoDialog;
+	private ConsultaPedidoDialog  consultaPedidoDialog;
 	
 	
 	
@@ -66,11 +68,11 @@ public class FuncionarioFrame{
 		JLabel lblCadastroProduto = new JLabel("Bem Vindo ao Sistema de Estoque");
 		panelPrincipal.add(lblCadastroProduto);
 		
-		//Menu de produto
 		JMenuBar menuBar= new JMenuBar();
 		frmFuncionario.setJMenuBar(menuBar);
 
-		 // Define e adiciona dois menus drop down na barra de menus
+		//Menu de produto
+		// Define e adiciona dois menus drop down na barra de menus
         JMenu produto = new JMenu("Produto");
         menuBar.add(produto);
         
@@ -80,9 +82,9 @@ public class FuncionarioFrame{
 		
         produto.add(cadastroProduto);
         produto.add(consultaProduto);
+
         
         //Menu de pedido
-       
         // Define e adiciona dois menus drop down na barra de menus
         JMenu pedido = new JMenu("Pedido");
         menuBar.add(pedido);
@@ -96,9 +98,8 @@ public class FuncionarioFrame{
         
         
         //Menu de Saida
-        
         // Define e adiciona dois menus drop down na barra de menus
-        JMenu  saida = new JMenu("Pedido");
+        JMenu  saida = new JMenu("Saída");
         menuBar.add(saida);
         
         // Cria e adiciona um item simples para o menu
@@ -108,19 +109,13 @@ public class FuncionarioFrame{
         saida.add(cadastroSaida);
         saida.add(consultaSaida);
         
-        JMenu  relatorio = new JMenu("Relatorios");
-        menuBar.add(relatorio);
-
-        // Cria e adiciona um item simples para o menu
-        JMenuItem relatorioProdutos = new JMenuItem("Relatório de Produtos");
-        JMenuItem relatorioPedidos = new JMenuItem("Relatório Pedidos");
-        relatorio.add(relatorioProdutos);
-        relatorio.add(relatorioPedidos);
-       
+              
         //FIM DOS MENUS
+        /*Chama as funções responsaveis por  gerenciar a apertura dos dialogs*/
         abrirCadatroProduto(cadastroProduto);
         abrirConsultaProduto(consultaProduto);
         abrirCadastroPedido(cadastroPedido);
+        abrirConsultaPedido(consultaPedido);
 	}
 
 	private void abrirCadatroProduto(JMenuItem cadastroProduto){
@@ -154,11 +149,25 @@ public class FuncionarioFrame{
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		  
 	    		  cadastroPedidoDialog = new FazerPedidoDialog(frmFuncionario);
-	    		  cadastroPedidoDialog.setBounds(100, 100, 600, 500);
+	    		  cadastroPedidoDialog.setBounds(100, 100, 500, 500);
 	    		  cadastroPedidoDialog.setTitle("Fazer Pedido de Produtos");
 	    		  cadastroPedidoDialog.setLocationRelativeTo(null);
 	    		  cadastroPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	    		  cadastroPedidoDialog.setVisible(true);
+	}});
+	}
+	
+	
+	private void abrirConsultaPedido(JMenuItem consultarPedido){
+		consultarPedido.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  consultaPedidoDialog = new ConsultaPedidoDialog(frmFuncionario);
+	    		  consultaPedidoDialog.setBounds(100, 100, 600, 400);
+	    		  consultaPedidoDialog.setTitle("Consultar Pedidos");
+	    		  consultaPedidoDialog.setLocationRelativeTo(null);
+	    		  consultaPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  consultaPedidoDialog.setVisible(true);
 	}});
 	}
 }
