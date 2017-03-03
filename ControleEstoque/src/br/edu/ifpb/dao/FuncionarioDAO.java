@@ -74,7 +74,6 @@ public class FuncionarioDAO {
 				chave = Statement.RETURN_GENERATED_KEYS;
 				pstm.close();
 				connection.close();
-				new Mensagens("Cadastrado com sucesso");
 				
 				System.out.println("Objeto inserido com sucesso:  "+chave);
 			} catch (SQLException sqle) {

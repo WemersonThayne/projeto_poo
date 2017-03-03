@@ -22,6 +22,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.FornecedorController;
 import br.edu.ifpb.controllers.FuncionarioController;
 import br.edu.ifpb.entidades.Departamento;
 import br.edu.ifpb.entidades.Fornecedor;
@@ -46,8 +47,6 @@ public class CadastroUsuarioFrame  {
 	private JLabel lblTipoDeUsurio;
 	private JComboBox<String> comboBoxTipoUsuario;
 	private JSeparator separator;
-	private JLabel lblNewLabel_5Matricula;
-	private JTextField textFieldMatriculaFuncinario;
 	private JLabel lblDepartamento;
 	private JComboBox<String> comboBoxDepartamentos;
 	private JSeparator separator_1;
@@ -214,13 +213,6 @@ public class CadastroUsuarioFrame  {
 		separator = new JSeparator();
 		frmCadastroDeUsurio.getContentPane().add(separator, "6, 18");
 		
-		lblNewLabel_5Matricula = new JLabel("Matricula:");
-		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_5Matricula, "4, 20, right, default");
-		
-		textFieldMatriculaFuncinario = new JTextField();
-		frmCadastroDeUsurio.getContentPane().add(textFieldMatriculaFuncinario, "6, 20, left, default");
-		textFieldMatriculaFuncinario.setColumns(10);
-		
 		lblDepartamento = new JLabel("Departamento:");
 		frmCadastroDeUsurio.getContentPane().add(lblDepartamento, "4, 22, right, default");
 		
@@ -247,7 +239,7 @@ public class CadastroUsuarioFrame  {
 		frmCadastroDeUsurio.getContentPane().add(separator_2, "6, 28");
 		
 		lblLogin = new JLabel("Login:");
-		frmCadastroDeUsurio.getContentPane().add(lblLogin, "4, 30, right, default");
+		frmCadastroDeUsurio.getContentPane().add(lblLogin, "4, 30, left, default");
 		
 		textFieldLogin = new JTextField();
 		frmCadastroDeUsurio.getContentPane().add(textFieldLogin, "6, 30, fill, default");
@@ -287,10 +279,6 @@ public class CadastroUsuarioFrame  {
 		progressBar.setVisible(false);
 		
 		frmCadastroDeUsurio.getContentPane().add(progressBar, "6, 38");
-		
-		//TODOS OS ITENS RELACIONADOS A TIPO DA PESSOA INVISIVEIS
-		lblNewLabel_5Matricula.setVisible(false);
-		textFieldMatriculaFuncinario.setVisible(false);
 		lblDepartamento.setVisible(false);
 		comboBoxDepartamentos.setVisible(false);
 
@@ -312,8 +300,6 @@ public class CadastroUsuarioFrame  {
 					if(comboBoxTipoUsuario.getSelectedIndex() == 0){
 
 						//FUNCIONARIO
-						lblNewLabel_5Matricula.setVisible(false);
-						textFieldMatriculaFuncinario.setVisible(false);
 						lblDepartamento.setVisible(false);
 						comboBoxDepartamentos.setVisible(false);
 
@@ -325,8 +311,7 @@ public class CadastroUsuarioFrame  {
 					}else{
 						if(comboBoxTipoUsuario.getSelectedIndex() == 1){
 							//FUNCIONARIO
-							lblNewLabel_5Matricula.setVisible(true);
-							textFieldMatriculaFuncinario.setVisible(true);
+							
 							lblDepartamento.setVisible(true);
 							comboBoxDepartamentos.setVisible(true);
 							
@@ -342,8 +327,6 @@ public class CadastroUsuarioFrame  {
 								textFieldNomeLoja.setVisible(true);
 								
 								//FUNCIONARIO
-								lblNewLabel_5Matricula.setVisible(false);
-								textFieldMatriculaFuncinario.setVisible(false);
 								lblDepartamento.setVisible(false);
 								comboBoxDepartamentos.setVisible(false);
 							}
@@ -362,7 +345,6 @@ public class CadastroUsuarioFrame  {
 		textFieldDtNascimento.setText("");
 		textFieldEmail.setText("");
 		textFieldEndereco.setText("");
-		textFieldMatriculaFuncinario.setText("");
 		textFieldNomeCompleto.setText("");
 		textFieldNomeLoja.setText("");
 		textFieldTelefone.setText("");
@@ -381,7 +363,12 @@ public class CadastroUsuarioFrame  {
 				e.printStackTrace();
 			}
 		}else{
-			//fornecedor = montaFornecedor();
+			try {
+				new FornecedorController().creat(montaFornecedor());
+			} catch (ControleEstoqueSqlException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
@@ -399,15 +386,28 @@ public class CadastroUsuarioFrame  {
 		funcionario.setEmail(textFieldEmail.getText().toString());
 		funcionario.setEndereco(textFieldEndereco.getText().toString());
 		funcionario.setLogin(textFieldLogin.getText().toString());
-		funcionario.setSenha(passwordField.getPassword().toString());		
+		funcionario.setSenha(passwordField.getText().toString());		
 		funcionario.setTelefone(textFieldTelefone.getText().toString());
 		
 		return funcionario;
 	}
 	
 	private Fornecedor montaFornecedor(){
-		return null;
+		
+		Fornecedor fornecedor = new Fornecedor();
+		fornecedor.setNome(textFieldNomeCompleto.getText().toString());
+		fornecedor.setCpf(textFieldCPF.getText().toString());
+		fornecedor.setDataNascimento(textFieldDtNascimento.getText().toString());
+		fornecedor.setEmail(textFieldEmail.getText().toString());
+		fornecedor.setEndereco(textFieldEndereco.getText().toString());
+		fornecedor.setLogin(textFieldLogin.getText().toString());
+		fornecedor.setSenha(passwordField.getText().toString());		
+		fornecedor.setTelefone(textFieldTelefone.getText().toString());
+		fornecedor.setNomeLoja(textFieldNomeLoja.getText().toString());
+		
+		return fornecedor;
 	}
+	
 	  class roda extends Thread { 
 		    public void run() {
 		      // Cria um objeto para atualizar a Barra
@@ -440,5 +440,5 @@ public class CadastroUsuarioFrame  {
 		      }
 		     roda = null; 
 		    }     
-		  }
+	}
 }
