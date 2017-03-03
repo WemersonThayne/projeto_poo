@@ -1,25 +1,25 @@
 package br.edu.ifpb.entidades;
 
-import java.util.Calendar;
-
-public abstract class Pessoa {
+public  abstract class Pessoa {
 
 	private int codPessoa;
 	private String nome;
 	private String cpf;
 	private String endereco;
-	private Calendar dataNascimento;
+	private String dataNascimento;
 	private String telefone;
 	private String email;
 	private int tipoPessoa;
+	private String login;
+	private String senha;
 	
 	public Pessoa(){
 	}
 	
-	public Pessoa(int codPessoa, String nome , String cpf, Calendar dataNascimento,
-			String telefone, String email, int tipoPessoa){
+	public Pessoa(String nome , String cpf, String dataNascimento,
+			String telefone, String email, int tipoPessoa,String login, String senha,String endereco){
 		
-		setCodPessoa(codPessoa);
+		//setCodPessoa(codPessoa);
 		setCpf(cpf);
 		setDataNascimento(dataNascimento);
 		setEmail(email);
@@ -27,6 +27,8 @@ public abstract class Pessoa {
 		setNome(nome);
 		setTelefone(telefone);
 		setTipoPessoa(tipoPessoa);		
+		setLogin(login);
+		setSenha(senha);
 	
 	}
 
@@ -62,11 +64,11 @@ public abstract class Pessoa {
 		this.endereco = endereco;
 	}
 
-	public Calendar getDataNascimento() {
+	public String getDataNascimento() {
 		return dataNascimento;
 	}
 
-	public void setDataNascimento(Calendar dataNascimento) {
+	public void setDataNascimento(String dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 
@@ -94,11 +96,27 @@ public abstract class Pessoa {
 		this.tipoPessoa = tipoPessoa;
 	}
 
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
 	@Override
 	public String toString() {
 		return "Pessoa [codPessoa=" + codPessoa + ", nome=" + nome + ", cpf=" + cpf + ", endereco=" + endereco
 				+ ", dataNascimento=" + dataNascimento + ", telefone=" + telefone + ", email=" + email + ", tipoPessoa="
-				+ tipoPessoa + "]";
+				+ tipoPessoa + ", login=" + login + ", senha=" + senha + "]";
 	}
-	
+
 }

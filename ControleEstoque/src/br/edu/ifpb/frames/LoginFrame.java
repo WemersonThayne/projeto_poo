@@ -19,7 +19,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.exceptions.ControleEstoqueException;
-import br.edu.ifpb.utils.ConnectionFactory;
+import br.edu.ifpb.exceptions.MensagenException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
@@ -39,13 +39,14 @@ public class LoginFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				
 				try {
-					//new ConnectionFactory();
 					LoginFrame window = new LoginFrame();
 					window.frmLogin.setVisible(true);
 					window.frmLogin.setLocationRelativeTo(null);
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					e.printStackTrace();
+					new MensagenException(e.getMessage()); 
 				}
 			}
 		});

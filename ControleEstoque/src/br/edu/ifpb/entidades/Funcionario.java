@@ -2,20 +2,12 @@ package br.edu.ifpb.entidades;
 
 public class Funcionario extends Pessoa{
 	
-	private long matricula;
 	private Departamento departamento;
 	
 	public Funcionario(){}
-	public Funcionario(long matri, Departamento dep){
+	public Funcionario( Departamento dep){
 		super();
-		setMatricula(matri);
 		setDepartamento(dep);
-	}
-	public long getMatricula() {
-		return matricula;
-	}
-	public void setMatricula(long matricula) {
-		this.matricula = matricula;
 	}
 	public Departamento getDepartamento() {
 		return departamento;
@@ -26,7 +18,7 @@ public class Funcionario extends Pessoa{
 	
 	@Override
 	public String toString() {
-		return super.toString()+ " Funcionario [matricula=" + matricula + ", departamento=" + departamento + "]";
+		return super.toString()+ " Funcionario [ departamento=" + departamento + "]";
 	}
 
 	

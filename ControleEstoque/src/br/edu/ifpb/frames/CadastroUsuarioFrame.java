@@ -3,22 +3,31 @@ package br.edu.ifpb.frames;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.text.MaskFormatter;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+
+import br.edu.ifpb.controllers.FuncionarioController;
+import br.edu.ifpb.entidades.Departamento;
+import br.edu.ifpb.entidades.Fornecedor;
+import br.edu.ifpb.entidades.Funcionario;
+import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
+import br.edu.ifpb.utils.Mensagens;
 
 public class CadastroUsuarioFrame  {
 
@@ -29,7 +38,7 @@ public class CadastroUsuarioFrame  {
 	private JLabel lblNewLabel_1;
 	private JTextField textFieldCPF;
 	private JLabel lblNewLabel_2;
-	private JTextField textFieldDtNascimento;
+	private JFormattedTextField textFieldDtNascimento;
 	private JLabel lblNewLabel_3;
 	private JTextField textFieldEmail;
 	private JLabel lblNewLabel_4;
@@ -50,7 +59,9 @@ public class CadastroUsuarioFrame  {
 	private JPasswordField passwordField;
 	private JLabel lblNewLabel_5;
 	private JProgressBar progressBar;
-
+	private JLabel lblLogin;
+	private JTextField textFieldLogin;
+	
 	/*
 	  Launch the application.
 	 */
@@ -81,7 +92,7 @@ public class CadastroUsuarioFrame  {
 	private void initialize() {
 		frmCadastroDeUsurio = new JFrame();
 		frmCadastroDeUsurio.setTitle("Cadastro de Usu\u00E1rio");
-		frmCadastroDeUsurio.setBounds(100, 100, 532, 465);
+		frmCadastroDeUsurio.setBounds(100, 100, 547, 501);
 		frmCadastroDeUsurio.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCadastroDeUsurio.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
@@ -93,6 +104,8 @@ public class CadastroUsuarioFrame  {
 				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),},
 			new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
@@ -156,7 +169,19 @@ public class CadastroUsuarioFrame  {
 		lblNewLabel_2 = new JLabel("Data de Nascimento:");
 		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_2, "4, 10, left, default");
 		
-		textFieldDtNascimento = new JTextField();
+		
+		
+		MaskFormatter mask;
+		try {
+			mask = new MaskFormatter( "##/##/####" );
+			textFieldDtNascimento = new JFormattedTextField();  
+			mask.install( textFieldDtNascimento );
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}  
+		
 		frmCadastroDeUsurio.getContentPane().add(textFieldDtNascimento, "6, 10, left, default");
 		textFieldDtNascimento.setColumns(10);
 		
@@ -221,12 +246,19 @@ public class CadastroUsuarioFrame  {
 		separator_2 = new JSeparator();
 		frmCadastroDeUsurio.getContentPane().add(separator_2, "6, 28");
 		
+		lblLogin = new JLabel("Login:");
+		frmCadastroDeUsurio.getContentPane().add(lblLogin, "4, 30, right, default");
+		
+		textFieldLogin = new JTextField();
+		frmCadastroDeUsurio.getContentPane().add(textFieldLogin, "6, 30, fill, default");
+		textFieldLogin.setColumns(10);
+		
 		lblNewLabel_5 = new JLabel("Senha:");
-		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_5, "4, 30, left, default");
+		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_5, "4, 32, left, default");
 		
 		passwordField = new JPasswordField();
 		passwordField.setColumns(10);
-		frmCadastroDeUsurio.getContentPane().add(passwordField, "6, 30, left, default");
+		frmCadastroDeUsurio.getContentPane().add(passwordField, "6, 32, left, default");
 		
 		btnConfirmar = new JButton("Confirmar");
 		btnConfirmar.addActionListener(new ActionListener() {
@@ -237,25 +269,24 @@ public class CadastroUsuarioFrame  {
                       roda.start(); 
                     }
 		      }});
-		frmCadastroDeUsurio.getContentPane().add(btnConfirmar, "6, 32");
+		frmCadastroDeUsurio.getContentPane().add(btnConfirmar, "6, 34");
 		
 		btnLimpar = new JButton("Limpar");
 		//chamar e execulta o metodo limparCampos
 		
 		btnLimpar.addActionListener(new ActionListener() {
 		    	  public void actionPerformed(ActionEvent e) { 
-		    	  
 		    	  limparCampos();
                    
 		}});
 		
-		frmCadastroDeUsurio.getContentPane().add(btnLimpar, "6, 34");
+		frmCadastroDeUsurio.getContentPane().add(btnLimpar, "6, 36");
 		
 		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
 		progressBar.setVisible(false);
 		
-		frmCadastroDeUsurio.getContentPane().add(progressBar, "6, 36");
+		frmCadastroDeUsurio.getContentPane().add(progressBar, "6, 38");
 		
 		//TODOS OS ITENS RELACIONADOS A TIPO DA PESSOA INVISIVEIS
 		lblNewLabel_5Matricula.setVisible(false);
@@ -338,6 +369,45 @@ public class CadastroUsuarioFrame  {
 		passwordField.setText("");
 	}
 	
+	
+	/*Monta o objeto para salvar no banco*/
+	private void montaObjeto(){
+		
+		int tipoPessoa = comboBoxTipoUsuario.getSelectedIndex();
+		if(tipoPessoa == 1){
+			try {
+				new FuncionarioController().creat(montaFuncionario());
+			} catch (ControleEstoqueSqlException e) {
+				e.printStackTrace();
+			}
+		}else{
+			//fornecedor = montaFornecedor();
+		}
+		
+	}
+	
+	private Funcionario montaFuncionario(){
+		
+		Departamento departamento = new Departamento();
+		departamento.setCodDepartamento(comboBoxDepartamentos.getSelectedIndex());
+		
+		Funcionario  funcionario = new Funcionario();
+		funcionario.setNome(textFieldNomeCompleto.getText().toString());
+		funcionario.setCpf(textFieldCPF.getText().toString());
+		funcionario.setDataNascimento(textFieldDtNascimento.getText().toString());
+		funcionario.setDepartamento(departamento);
+		funcionario.setEmail(textFieldEmail.getText().toString());
+		funcionario.setEndereco(textFieldEndereco.getText().toString());
+		funcionario.setLogin(textFieldLogin.getText().toString());
+		funcionario.setSenha(passwordField.getPassword().toString());		
+		funcionario.setTelefone(textFieldTelefone.getText().toString());
+		
+		return funcionario;
+	}
+	
+	private Fornecedor montaFornecedor(){
+		return null;
+	}
 	  class roda extends Thread { 
 		    public void run() {
 		      // Cria um objeto para atualizar a Barra
@@ -349,13 +419,14 @@ public class CadastroUsuarioFrame  {
 		          progressBar.setValue(valor+1);
 		        }
 		      };
-		      for (int i = 0; i <= 2000; i++) {
+		      for (int i = 0; i <= 3000; i++) {
 		        // ---------------------------------
 		        // Faça aqui o processo a realizar
 		        // ---------------------------------
-		    	  if(i == 2000){
+		    	  if(i == 3000){
+		    		  montaObjeto();
 		    		  frmCadastroDeUsurio.dispose();
-		              JOptionPane.showMessageDialog(null, "Cadastro Efetuado com Sucesso...");
+		              new Mensagens("Cadastro Efetuado com Sucesso...");
 		              LoginFrame.main(null); 
 		    	  }
 		    	  
