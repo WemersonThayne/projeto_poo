@@ -17,6 +17,12 @@ import br.edu.ifpb.frames.dialogs.CadastroProdutoDialog;
 import br.edu.ifpb.frames.dialogs.ConsultaPedidoDialog;
 import br.edu.ifpb.frames.dialogs.ConsultaProdutoDialog;
 import br.edu.ifpb.frames.dialogs.FazerPedidoDialog;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import javax.swing.JButton;
+import javax.swing.JSeparator;
 
 public class FuncionarioFrame{
 
@@ -65,9 +71,27 @@ public class FuncionarioFrame{
 		
 		panelPrincipal = new JPanel();
 		frmFuncionario.getContentPane().add(panelPrincipal);
+		panelPrincipal.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("136px"),
+				ColumnSpec.decode("max(100dlu;default)"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("137px"),},
+			new RowSpec[] {
+				FormSpecs.LINE_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,}));
 		
 		JLabel lblCadastroProduto = new JLabel("Bem Vindo ao Sistema de Estoque");
-		panelPrincipal.add(lblCadastroProduto);
+		panelPrincipal.add(lblCadastroProduto, "2, 2, left, top");
+		
+		JSeparator separator = new JSeparator();
+		panelPrincipal.add(separator, "1, 4, 4, 1, fill, default");
+		
+		JButton btnMeusDados = new JButton("Meus Dados");
+		panelPrincipal.add(btnMeusDados, "1, 6");
 		
 		JMenuBar menuBar= new JMenuBar();
 		frmFuncionario.setJMenuBar(menuBar);
