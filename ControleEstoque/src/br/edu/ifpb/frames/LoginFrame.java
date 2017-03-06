@@ -18,7 +18,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.FornecedorController;
 import br.edu.ifpb.controllers.FuncionarioController;
+import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueException;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
@@ -133,10 +135,9 @@ public class LoginFrame {
 			//TODO: chamar servico de login
 			frmLogin.dispose(); //Destroy the JFrame object
 			//TODO:escolher a tela ou de funcionario ou de fornecedor
-			verficaLoginFuncionario();
-			new Mensagens(Util.LOGIN_MENSAGEM + txtLogin.getText());
-			//FuncionarioFrame.main(null);
-			FornecedorFrame.main(null);
+			System.out.println(verficaLoginFuncionario());
+			System.out.println(verficaLoginFornecedor());
+			
 		}else{
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			btnEntrar.setText("Entrar");
@@ -144,16 +145,60 @@ public class LoginFrame {
 	}
 	
 	private boolean verficaLoginFuncionario(){
+		boolean retorno = false;
 		Funcionario funci = new Funcionario();
 		funci.setLogin(txtLogin.getText().toString().trim());
 		funci.setSenha(pwdSenha.getText().toString().trim());
+		
 		try {
-			new FuncionarioController().verificaLogin(funci);
+			Funcionario funcionarioRetorno = new FuncionarioController().verificaLogin(funci);
+			if(funcionarioRetorno != null){
+				if(funcionarioRetorno.getLogin().equalsIgnoreCase(funci.getLogin()) && funcionarioRetorno.getSenha().equalsIgnoreCase(funci.getSenha())){
+					new Mensagens(Util.LOGIN_MENSAGEM + funcionarioRetorno.getNome());
+					FuncionarioFrame.main(null);
+					retorno = true;
+				}else{
+					new Mensagens(Util.LOGIN_MENSAGEM_INVALIDO + funcionarioRetorno.getNome());
+					retorno = false;
+				}	
+			}else{
+				retorno = false; 
+			}
+			
+		} catch (ControleEstoqueSqlException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return retorno;
+	}
+	
+	private boolean verficaLoginFornecedor(){
+		boolean retorno = false;
+
+		Fornecedor forne = new Fornecedor();
+		forne.setLogin(txtLogin.getText().toString().trim());
+		forne.setSenha(pwdSenha.getText().toString().trim());
+		
+		try {
+			Fornecedor fornecedorRetorno = new FornecedorController().verificaLogin(forne);
+			if(fornecedorRetorno != null){
+				if(fornecedorRetorno.getLogin().equalsIgnoreCase(forne.getLogin()) && fornecedorRetorno.getSenha().equalsIgnoreCase(forne.getSenha()) ){
+					new Mensagens(Util.LOGIN_MENSAGEM + fornecedorRetorno.getNome());
+					FornecedorFrame.main(null);
+					retorno = true;
+				}else{
+					new Mensagens(Util.LOGIN_MENSAGEM_INVALIDO + fornecedorRetorno.getNome());
+					retorno = false;
+				}	
+			}else{
+				retorno =  false;
+			}
+			
 		} catch (ControleEstoqueSqlException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	return true;
+		return retorno ;
 	}
 }

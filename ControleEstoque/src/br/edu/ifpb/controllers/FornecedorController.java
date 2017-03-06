@@ -9,4 +9,8 @@ public class FornecedorController {
 	public int creat(Fornecedor fornecedor) throws ControleEstoqueSqlException {		
 		return FornecedorDAO.getInstance().creat( fornecedor);
 	}
+	
+	public Fornecedor verificaLogin(Fornecedor usuario) throws ControleEstoqueSqlException {
+		return FornecedorDAO.getInstance().verificarLogin(usuario);
+	}
 }

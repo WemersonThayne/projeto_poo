@@ -15,7 +15,7 @@ import br.edu.ifpb.utils.ConnectionFactory;
 public class FuncionarioDAO {
 
 	private final String INSERT = "INSERT INTO FUNCIONARIO (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO) VALUES (?,?,?,?,?,?,?,?,?)";
-	private final String LISTBYLOGIN = "SELECT LOGIN, SENHA FROM FUNCIONARIO WHERE LOGIN=? AND SENHA=?";
+	private final String LISTBYLOGIN = "SELECT ID, NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO FROM FUNCIONARIO WHERE LOGIN=? AND SENHA=?";
 	
 	/*private final String UPDATE = "UPDATE CONTATO SET NOME=?, TELEFONE=?, EMAIL=? WHERE ID=?";
 	private final String DELETE = "DELETE FROM CONTATO WHERE ID =?";
@@ -88,6 +88,8 @@ public class FuncionarioDAO {
 
 		Funcionario funcioarioConsulta = null;
 		connection = null;
+		if(funcionario != null){
+			
 		
 		try {
 			
@@ -99,8 +101,8 @@ public class FuncionarioDAO {
 			pstm.setString(2, funcionario.getSenha());
 			
 			ResultSet rs = pstm.executeQuery();
-	
 			if (rs.next()) {
+				
 				funcioarioConsulta = new Funcionario();
 				funcioarioConsulta.setCodPessoa(rs.getInt("id"));
 				funcioarioConsulta.setLogin(rs.getString("login"));
@@ -109,7 +111,8 @@ public class FuncionarioDAO {
 				funcioarioConsulta.setTelefone(rs.getString("telefone"));
 				funcioarioConsulta.setCpf(rs.getString("cpf"));
 				funcioarioConsulta.setEndereco(rs.getString("endereco"));
-				funcioarioConsulta.setDataNascimento(rs.getString("dataNnascimento"));
+				funcioarioConsulta.setDataNascimento(rs.getString("dataNascimento"));
+				funcioarioConsulta.setSenha(rs.getString("senha"));
 				funcioarioConsulta.setDepartamento(new Departamento());
 			}
 
@@ -120,8 +123,8 @@ public class FuncionarioDAO {
 			throw new ControleEstoqueSqlException(sqle.getErrorCode(),
 					sqle.getLocalizedMessage());
 		}
+		}
 		return funcioarioConsulta;
-
 	}
 
 	/*public ArrayList<Usuario> readById(Usuario usuario) {
