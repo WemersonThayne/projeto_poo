@@ -18,7 +18,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.FuncionarioController;
+import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueException;
+import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.exceptions.MensagenException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
@@ -130,6 +133,7 @@ public class LoginFrame {
 			//TODO: chamar servico de login
 			frmLogin.dispose(); //Destroy the JFrame object
 			//TODO:escolher a tela ou de funcionario ou de fornecedor
+			verficaLoginFuncionario();
 			new Mensagens(Util.LOGIN_MENSAGEM + txtLogin.getText());
 			//FuncionarioFrame.main(null);
 			FornecedorFrame.main(null);
@@ -137,5 +141,19 @@ public class LoginFrame {
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			btnEntrar.setText("Entrar");
 		}
+	}
+	
+	private boolean verficaLoginFuncionario(){
+		Funcionario funci = new Funcionario();
+		funci.setLogin(txtLogin.getText().toString().trim());
+		funci.setSenha(pwdSenha.getText().toString().trim());
+		try {
+			new FuncionarioController().verificaLogin(funci);
+		} catch (ControleEstoqueSqlException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	return true;
 	}
 }

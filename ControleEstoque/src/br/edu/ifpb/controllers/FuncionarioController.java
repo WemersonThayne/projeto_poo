@@ -17,6 +17,9 @@ public ArrayList<Usuario> readById(Usuario user) {
 	public int creat(Funcionario funcionario) throws ControleEstoqueSqlException {		
 		return FuncionarioDAO.getInstance().creat( funcionario);
 	}
+	public Funcionario verificaLogin(Funcionario usuario) throws ControleEstoqueSqlException {
+		return FuncionarioDAO.getInstance().verificarLogin(usuario);
+	}
 /*
 public String delete(Usuario user) {
 	UsuarioDAO.getInstance().delete(user);
@@ -28,9 +31,7 @@ public String delete(Usuario user) {
 	return "Atualizado com sucesso";
 }
 
-public Usuario verificaLogin(Usuario usuario) {
-	return UsuarioDAO.getInstance().verificarLogin(usuario);
-}
+
 
 public List<Usuario> consultarUsuariosByNome(Usuario usuario) throws SQLException {
 	return UsuarioDAO.getInstance().consultarUsuariosByNome(usuario);

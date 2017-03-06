@@ -1,27 +1,26 @@
 package br.edu.ifpb.dao;
 
-import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 
+import br.edu.ifpb.entidades.Departamento;
 import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
-import br.edu.ifpb.utils.Mensagens;
 
 public class FuncionarioDAO {
 
 	private final String INSERT = "INSERT INTO FUNCIONARIO (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO) VALUES (?,?,?,?,?,?,?,?,?)";
+	private final String LISTBYLOGIN = "SELECT LOGIN, SENHA FROM FUNCIONARIO WHERE LOGIN=? AND SENHA=?";
+	
 	/*private final String UPDATE = "UPDATE CONTATO SET NOME=?, TELEFONE=?, EMAIL=? WHERE ID=?";
 	private final String DELETE = "DELETE FROM CONTATO WHERE ID =?";
 	private final String LIST = "SELECT * FROM CONTATO";
-	private final String LISTBYID = "SELECT * FROM CONTATO WHERE ID=?";*/
+	*/
 
 	
 	private static FuncionarioDAO instance;
@@ -85,55 +84,47 @@ public class FuncionarioDAO {
 		return chave;
 	}
 
-	/*public Usuario verificarLogin(Usuario usuario) {
+	public Funcionario verificarLogin(Funcionario funcionario) throws ControleEstoqueSqlException  {
 
-		Usuario usuarioConsulta = null;
-
+		Funcionario funcioarioConsulta = null;
+		connection = null;
+		
 		try {
+			
+			connection = (Connection) new  ConnectionFactory().getConnection();
 
-			String sql = "SELECT U.cd_usuario, U.nm_login, U.nm_usuario, U.nm_email,"
-					+ " U.nr_telefone, U.nr_cpf, U.nm_endereco,"
-					+ " U.dt_nascimento, U.tp_sexo, U.cd_tipousuario"
-					+ " FROM tb_usuario as U"
-					+ " WHERE U.nm_login = '"
-					+ usuario.getLogin()
-					+ "'"
-					+ " AND U.nm_senha = '"
-					+ usuario.getSenha() + "'";
-
-			// prepared statement para inserção
-			PreparedStatement stmt = (PreparedStatement) connection
-					.prepareStatement(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-
+			// prepared statement para consulta do login no banco 
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(LISTBYLOGIN);
+			pstm.setString(1, funcionario.getLogin());
+			pstm.setString(2, funcionario.getSenha());
+			
+			ResultSet rs = pstm.executeQuery();
+	
 			if (rs.next()) {
-				usuarioConsulta = new Usuario();
-				usuarioConsulta.setId(rs.getInt("U.cd_usuario"));
-				usuarioConsulta.setLogin(rs.getString("U.nm_login"));
-				usuarioConsulta.setNome(rs.getString("U.nm_usuario"));
-				usuarioConsulta.setEmail(rs.getString("U.nm_email"));
-				usuarioConsulta.setTelefone(rs
-						.getString("U.nr_telefone"));
-				usuarioConsulta.setCpf(rs.getString("U.nr_cpf"));
-				usuarioConsulta.setEndereco(rs.getString("nm_endereco"));
-				usuarioConsulta.setNascimento(rs.getDate("U.dt_nascimento"));
-				usuarioConsulta.setSexo(rs.getString("U.tp_sexo"));
-				TipoUsuario tipoUsuario = new TipoUsuario();
-				tipoUsuario.setId(rs.getInt("U.cd_tipousuario"));
-				usuarioConsulta.setTipoUsuario(tipoUsuario);
+				funcioarioConsulta = new Funcionario();
+				funcioarioConsulta.setCodPessoa(rs.getInt("id"));
+				funcioarioConsulta.setLogin(rs.getString("login"));
+				funcioarioConsulta.setNome(rs.getString("nome"));
+				funcioarioConsulta.setEmail(rs.getString("email"));
+				funcioarioConsulta.setTelefone(rs.getString("telefone"));
+				funcioarioConsulta.setCpf(rs.getString("cpf"));
+				funcioarioConsulta.setEndereco(rs.getString("endereco"));
+				funcioarioConsulta.setDataNascimento(rs.getString("dataNnascimento"));
+				funcioarioConsulta.setDepartamento(new Departamento());
 			}
 
-			stmt.close();
+			pstm.close();
 			rs.close();
-
+			connection.close();
 		} catch (SQLException sqle) {
-			throw new RuntimeException(sqle);
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(),
+					sqle.getLocalizedMessage());
 		}
-		return usuarioConsulta;
+		return funcioarioConsulta;
 
 	}
 
-	public ArrayList<Usuario> readById(Usuario usuario) {
+	/*public ArrayList<Usuario> readById(Usuario usuario) {
 
 		ArrayList<Usuario> users = new ArrayList<Usuario>();
 
