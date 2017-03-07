@@ -25,7 +25,7 @@ public class Departamento {
 
 	@Override
 	public String toString() {
-		return "Departamento [codDepartamento=" + codDepartamento + ", descricao=" + descricao + "]";
+		return descricao ;
 	}
 	
 }

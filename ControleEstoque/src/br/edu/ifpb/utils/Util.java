@@ -1,7 +1,10 @@
 package br.edu.ifpb.utils;
 
+import javax.swing.JComboBox;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import br.edu.ifpb.entidades.Departamento;
 
 public  class  Util {
 
@@ -22,5 +25,19 @@ public  class  Util {
 		}
 		return true;
 	}
+
 	
+	public static boolean validarCamposComboTipoUsuario(JComboBox<String> comboBoxTipoUsuario){
+		if(comboBoxTipoUsuario.getSelectedIndex() == 1){
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean validarCamposComboDepartamento(JComboBox<Departamento> comboBoxDepartamentos){
+		if(comboBoxDepartamentos.getSelectedIndex() == 0){
+			return false;
+		}
+		return true;
+	}
 }

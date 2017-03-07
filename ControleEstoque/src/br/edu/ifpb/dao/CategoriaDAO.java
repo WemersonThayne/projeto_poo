@@ -50,7 +50,7 @@ public class CategoriaDAO {
 			while (rs.next()) {
 
 				CategoriaProduto categoria = new CategoriaProduto();
-				categoria.setCodCategoria(rs.getInt("id"));
+				categoria.setCodCategoria(rs.getInt("codCategoria"));
 				categoria.setDescricao(rs.getString("descricao"));
 				categorias.add(categoria);
 			}

@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,6 +24,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.DepartamentoController;
 import br.edu.ifpb.controllers.FornecedorController;
 import br.edu.ifpb.controllers.FuncionarioController;
 import br.edu.ifpb.entidades.Departamento;
@@ -29,6 +32,7 @@ import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
+import br.edu.ifpb.utils.Util;
 
 public class CadastroUsuarioFrame  {
 
@@ -37,18 +41,18 @@ public class CadastroUsuarioFrame  {
 	private JLabel lblNewLabel;
 	private JTextField textFieldEndereco;
 	private JLabel lblNewLabel_1;
-	private JTextField textFieldCPF;
+	private JFormattedTextField textFieldCPF;
 	private JLabel lblNewLabel_2;
 	private JFormattedTextField textFieldDtNascimento;
 	private JLabel lblNewLabel_3;
 	private JTextField textFieldEmail;
 	private JLabel lblNewLabel_4;
-	private JTextField textFieldTelefone;
+	private JFormattedTextField textFieldTelefone;
 	private JLabel lblTipoDeUsurio;
 	private JComboBox<String> comboBoxTipoUsuario;
 	private JSeparator separator;
 	private JLabel lblDepartamento;
-	private JComboBox<String> comboBoxDepartamentos;
+	private JComboBox<Departamento> comboBoxDepartamentos;
 	private JSeparator separator_1;
 	private JLabel lblNewLabel_6NomeLoja;
 	private JTextField textFieldNomeLoja;
@@ -60,6 +64,8 @@ public class CadastroUsuarioFrame  {
 	private JProgressBar progressBar;
 	private JLabel lblLogin;
 	private JTextField textFieldLogin;
+	
+	List<Departamento> departamentos  = null;
 	
 	/*
 	  Launch the application.
@@ -161,26 +167,14 @@ public class CadastroUsuarioFrame  {
 		lblNewLabel_1 = new JLabel("CPF:");
 		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_1, "4, 8, left, default");
 		
-		textFieldCPF = new JTextField();
+		textFieldCPF = new JFormattedTextField();
 		frmCadastroDeUsurio.getContentPane().add(textFieldCPF, "6, 8, fill, default");
 		textFieldCPF.setColumns(10);
 		
 		lblNewLabel_2 = new JLabel("Data de Nascimento:");
 		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_2, "4, 10, left, default");
-		
-		
-		
-		MaskFormatter mask;
-		try {
-			mask = new MaskFormatter( "##/##/####" );
-			textFieldDtNascimento = new JFormattedTextField();  
-			mask.install( textFieldDtNascimento );
-			
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}  
-		
+
+		textFieldDtNascimento = new JFormattedTextField();
 		frmCadastroDeUsurio.getContentPane().add(textFieldDtNascimento, "6, 10, left, default");
 		textFieldDtNascimento.setColumns(10);
 		
@@ -194,7 +188,7 @@ public class CadastroUsuarioFrame  {
 		lblNewLabel_4 = new JLabel("Telefone:");
 		frmCadastroDeUsurio.getContentPane().add(lblNewLabel_4, "4, 14, left, default");
 		
-		textFieldTelefone = new JTextField();
+		textFieldTelefone = new JFormattedTextField();
 		frmCadastroDeUsurio.getContentPane().add(textFieldTelefone, "6, 14, left, default");
 		textFieldTelefone.setColumns(10);
 		
@@ -216,12 +210,8 @@ public class CadastroUsuarioFrame  {
 		lblDepartamento = new JLabel("Departamento:");
 		frmCadastroDeUsurio.getContentPane().add(lblDepartamento, "4, 22, right, default");
 		
-		//TODO: chamar serviço de departamentos
-		String[] departamentos = {"Selecione...","Departamento1", "Departamento2"};
-		comboBoxDepartamentos = new JComboBox<String>();
-		comboBoxDepartamentos.addItem(departamentos[0]);
-		comboBoxDepartamentos.addItem(departamentos[1]);
-		comboBoxDepartamentos.addItem(departamentos[2]);
+		comboBoxDepartamentos = new JComboBox<Departamento>();
+	
 		
 		frmCadastroDeUsurio.getContentPane().add(comboBoxDepartamentos, "6, 22, fill, default");
 		
@@ -286,10 +276,10 @@ public class CadastroUsuarioFrame  {
 		textFieldNomeLoja.setVisible(false);
 		lblDepartamento.setVisible(false);
 		comboBoxDepartamentos.setVisible(false);
+		
+		montarMascara();
 	}
 	
-	// Define uma Thread para simular rodando
-	private Thread roda;
 	
 	/*Metodo responsavel por escutar os click e a mudança de usuario*/
 	private void mudaTipoUsuario(){
@@ -314,6 +304,7 @@ public class CadastroUsuarioFrame  {
 							
 							lblDepartamento.setVisible(true);
 							comboBoxDepartamentos.setVisible(true);
+							monstarDepartamentos();
 							
 							//FORNECEDOR
 							lblNewLabel_6NomeLoja.setVisible(false);
@@ -325,7 +316,7 @@ public class CadastroUsuarioFrame  {
 								//FORNECEDOR
 								lblNewLabel_6NomeLoja.setVisible(true);
 								textFieldNomeLoja.setVisible(true);
-								
+							
 								//FUNCIONARIO
 								lblDepartamento.setVisible(false);
 								comboBoxDepartamentos.setVisible(false);
@@ -336,6 +327,46 @@ public class CadastroUsuarioFrame  {
 		      }
 		    });
 	}
+	
+	/*Preenche o combo com os departamentos*/
+	private void monstarDepartamentos(){
+		departamentos = new ArrayList<Departamento>();
+		
+		try {
+			departamentos = new DepartamentoController().listarTodos();
+		} catch (ControleEstoqueSqlException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		for (Departamento departamento : departamentos) {
+			comboBoxDepartamentos.addItem(departamento);	
+		}
+
+	}
+
+	/*Coloca mascar nos campos de telefone,cpf e data de nascimento*/
+	private void montarMascara(){
+		MaskFormatter mask;
+		try {
+			mask = new MaskFormatter( "##/##/####" );
+			mask.install( textFieldDtNascimento );
+			
+			
+			mask = new MaskFormatter( "###.###.###-##" );
+			mask.install( textFieldCPF );
+			
+
+			mask = new MaskFormatter( "(##)#####-####" );
+			mask.install( textFieldTelefone );
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}  
+		
+	}
+	
 	
 	/*Metodo de limpar todos os campos*/
 	private void limparCampos(){
@@ -351,33 +382,50 @@ public class CadastroUsuarioFrame  {
 		passwordField.setText("");
 	}
 	
+	/*Valida todos os campos*/
+	private boolean validarAll(){
+		if(Util.validarCampos(textFieldNomeCompleto) 
+				&& Util.validarCampos(textFieldEndereco)
+				   && Util.validarCampos(textFieldCPF)
+					 && Util.validarCampos(textFieldDtNascimento)
+					    && Util.validarCampos(textFieldEmail)
+					       && Util.validarCampos(textFieldTelefone)
+					          && Util.validarCampos(textFieldLogin)
+					          	 && Util.validarCamposSenha(passwordField)
+						          	    && Util.validarCamposComboTipoUsuario(comboBoxTipoUsuario)){
+			return true;
+				
+			}else{
+				new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
+				return false;
+			}
+	}
 	
 	/*Monta o objeto para salvar no banco*/
 	private void montaObjeto(){
 		
 		int tipoPessoa = comboBoxTipoUsuario.getSelectedIndex();
-		if(tipoPessoa == 1){
-			try {
-				new FuncionarioController().creat(montaFuncionario());
-			} catch (ControleEstoqueSqlException e) {
-				e.printStackTrace();
+			
+			if(tipoPessoa == 1){
+				try {
+					new FuncionarioController().creat(montaFuncionario());
+				} catch (ControleEstoqueSqlException e) {
+					e.printStackTrace();
+				}
+			}else{
+				try {
+					new FornecedorController().creat(montaFornecedor());
+				} catch (ControleEstoqueSqlException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-		}else{
-			try {
-				new FornecedorController().creat(montaFornecedor());
-			} catch (ControleEstoqueSqlException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 	}
 	
+	/*Criar um objeto do tipo Funcionario*/
 	private Funcionario montaFuncionario(){
 		
-		Departamento departamento = new Departamento();
-		departamento.setCodDepartamento(comboBoxDepartamentos.getSelectedIndex());
-		
+		Departamento departamento = (Departamento) comboBoxDepartamentos.getSelectedItem();
 		Funcionario  funcionario = new Funcionario();
 		funcionario.setNome(textFieldNomeCompleto.getText().toString());
 		funcionario.setCpf(textFieldCPF.getText().toString());
@@ -392,6 +440,7 @@ public class CadastroUsuarioFrame  {
 		return funcionario;
 	}
 	
+	/*Criar um objeto do tipo Fornecedor*/
 	private Fornecedor montaFornecedor(){
 		
 		Fornecedor fornecedor = new Fornecedor();
@@ -407,7 +456,12 @@ public class CadastroUsuarioFrame  {
 		
 		return fornecedor;
 	}
+
+	// Define uma Thread para simular rodando
+	private Thread roda;
 	
+	
+	/*Class interna*/
 	  class roda extends Thread { 
 		    public void run() {
 		      // Cria um objeto para atualizar a Barra
@@ -420,14 +474,15 @@ public class CadastroUsuarioFrame  {
 		        }
 		      };
 		      for (int i = 0; i <= 3000; i++) {
-		        // ---------------------------------
-		        // Faça aqui o processo a realizar
-		        // ---------------------------------
 		    	  if(i == 3000){
-		    		  montaObjeto();
-		    		  frmCadastroDeUsurio.dispose();
-		              new Mensagens("Cadastro Efetuado com Sucesso...");
-		              LoginFrame.main(null); 
+		    		  if(validarAll()){
+		    			  montaObjeto();
+		    			  frmCadastroDeUsurio.dispose();
+			              new Mensagens("Cadastro Efetuado com Sucesso...");
+			              LoginFrame.main(null); 
+		    		  }else{
+		    			  progressBar.setVisible(false);
+		    		  }
 		    	  }
 		    	  
 		        // Atualiza a Barra de Progresso
@@ -441,4 +496,5 @@ public class CadastroUsuarioFrame  {
 		     roda = null; 
 		    }     
 	}
+	 
 }

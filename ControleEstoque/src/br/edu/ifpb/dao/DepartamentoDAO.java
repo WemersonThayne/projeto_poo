@@ -16,7 +16,7 @@ import br.edu.ifpb.utils.ConnectionFactory;
 
 public class DepartamentoDAO {
 
-	private final String SELECTALL = "SELECT * FROM DEPARTAMENTOS";
+	private final String SELECTALL = "SELECT * FROM DEPARTAMENTO";
 
 	private static DepartamentoDAO instance;
 
@@ -53,7 +53,7 @@ public class DepartamentoDAO {
 			while (rs.next()) {
 
 				Departamento departamento = new Departamento();
-				departamento.setCodDepartamento(rs.getInt("id"));
+				departamento.setCodDepartamento(rs.getInt("codDepartamento"));
 				departamento.setDescricao(rs.getString("descricao"));
 				departamentos.add(departamento);
 			}

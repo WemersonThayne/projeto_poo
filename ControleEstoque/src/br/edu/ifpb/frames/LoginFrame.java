@@ -129,14 +129,13 @@ public class LoginFrame {
 		});
 	}
 
+	/*Chama a validação dos campos e chama os serviços de login*/
 	private void chamarTelaPrincipal() throws ControleEstoqueException {
 		
 		if(Util.validarCampos(txtLogin) && Util.validarCamposSenha(pwdSenha)){
-			//TODO: chamar servico de login
-			frmLogin.dispose(); //Destroy the JFrame object
-			//TODO:escolher a tela ou de funcionario ou de fornecedor
-			System.out.println(verficaLoginFuncionario());
-			System.out.println(verficaLoginFornecedor());
+			if(verficaLoginFuncionario() == false && verficaLoginFornecedor() == false){
+				new Mensagens(Util.LOGIN_MENSAGEM_INVALIDO + txtLogin.getText().toString());
+			}
 			
 		}else{
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
@@ -144,21 +143,25 @@ public class LoginFrame {
 		}
 	}
 	
+	/*Chama o serviço de login de funcionario*/
 	private boolean verficaLoginFuncionario(){
+		
 		boolean retorno = false;
+		/*Set os valores dos inputs da tela no objeto para comprar com o retorno no serviço*/
 		Funcionario funci = new Funcionario();
 		funci.setLogin(txtLogin.getText().toString().trim());
 		funci.setSenha(pwdSenha.getText().toString().trim());
 		
 		try {
+			/*Guarda o retorno do controle para comparar com objeto que foi enviado para consulta*/
 			Funcionario funcionarioRetorno = new FuncionarioController().verificaLogin(funci);
 			if(funcionarioRetorno != null){
 				if(funcionarioRetorno.getLogin().equalsIgnoreCase(funci.getLogin()) && funcionarioRetorno.getSenha().equalsIgnoreCase(funci.getSenha())){
 					new Mensagens(Util.LOGIN_MENSAGEM + funcionarioRetorno.getNome());
+					frmLogin.dispose();
 					FuncionarioFrame.main(null);
 					retorno = true;
 				}else{
-					new Mensagens(Util.LOGIN_MENSAGEM_INVALIDO + funcionarioRetorno.getNome());
 					retorno = false;
 				}	
 			}else{
@@ -166,28 +169,30 @@ public class LoginFrame {
 			}
 			
 		} catch (ControleEstoqueSqlException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return retorno;
 	}
 	
+	/*Chama o serviço de login de funcionario*/
 	private boolean verficaLoginFornecedor(){
 		boolean retorno = false;
+		/*Set os valores dos inputs da tela no objeto para comprar com o retorno no serviço*/
 
 		Fornecedor forne = new Fornecedor();
 		forne.setLogin(txtLogin.getText().toString().trim());
 		forne.setSenha(pwdSenha.getText().toString().trim());
 		
 		try {
+			/*Guarda o retorno do controle para comparar com objeto que foi enviado para consulta*/
 			Fornecedor fornecedorRetorno = new FornecedorController().verificaLogin(forne);
 			if(fornecedorRetorno != null){
 				if(fornecedorRetorno.getLogin().equalsIgnoreCase(forne.getLogin()) && fornecedorRetorno.getSenha().equalsIgnoreCase(forne.getSenha()) ){
 					new Mensagens(Util.LOGIN_MENSAGEM + fornecedorRetorno.getNome());
+					frmLogin.dispose();
 					FornecedorFrame.main(null);
 					retorno = true;
 				}else{
-					new Mensagens(Util.LOGIN_MENSAGEM_INVALIDO + fornecedorRetorno.getNome());
 					retorno = false;
 				}	
 			}else{
@@ -195,7 +200,6 @@ public class LoginFrame {
 			}
 			
 		} catch (ControleEstoqueSqlException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
