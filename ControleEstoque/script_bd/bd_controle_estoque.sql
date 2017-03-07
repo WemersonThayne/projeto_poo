@@ -59,7 +59,7 @@ ENGINE = InnoDB;
 -- Table `controle_estoque`.`Produto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `controle_estoque`.`Produto` (
-  `codProduto` INT NOT NULL,
+  `codProduto` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(45) NOT NULL,
   `valorUnitario` DOUBLE NOT NULL,
   `codCategoria` INT NULL,
