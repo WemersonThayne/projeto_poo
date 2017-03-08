@@ -153,7 +153,6 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 		if (Util.validarCampos(textFieldNomeProduto) && Util.validarCampos(textFieldQuantidadeProduto)
 				&& Util.validarCampos(textFieldValorUnitario)) {
 			return true;
-
 		} else {
 			new Mensagens(Util.VALOR_INSERIDOS_INVALIDOS);
 			return false;
@@ -169,7 +168,7 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 			produto.setCategoria(cat);
 			produto.setNome(textFieldNomeProduto.getText().toString());
 			produto.setQuantideAtual(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
-			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString()));
+			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
 			try {
 				new ProdutoController().creat(produto);
 			} catch (ControleEstoqueSqlException e) {

@@ -3,7 +3,6 @@ package br.edu.ifpb.frames;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.text.MaskFormatter;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -31,6 +29,7 @@ import br.edu.ifpb.entidades.Departamento;
 import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
+import br.edu.ifpb.exceptions.MensagenException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
@@ -277,7 +276,14 @@ public class CadastroUsuarioFrame  {
 		lblDepartamento.setVisible(false);
 		comboBoxDepartamentos.setVisible(false);
 		
-		montarMascara();
+		try {
+			Util.montarMascara(textFieldCPF,"###.###.###-##");
+			Util.montarMascara(textFieldDtNascimento,"##/##/####");
+			Util.montarMascara(textFieldTelefone,"(##)#####-####");
+			
+		} catch (MensagenException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	
@@ -345,29 +351,6 @@ public class CadastroUsuarioFrame  {
 
 	}
 
-	/*Coloca mascar nos campos de telefone,cpf e data de nascimento*/
-	private void montarMascara(){
-		MaskFormatter mask;
-		try {
-			mask = new MaskFormatter( "##/##/####" );
-			mask.install( textFieldDtNascimento );
-			
-			
-			mask = new MaskFormatter( "###.###.###-##" );
-			mask.install( textFieldCPF );
-			
-
-			mask = new MaskFormatter( "(##)#####-####" );
-			mask.install( textFieldTelefone );
-			
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}  
-		
-	}
-	
-	
 	/*Metodo de limpar todos os campos*/
 	private void limparCampos(){
 		comboBoxTipoUsuario.setSelectedIndex(0);
