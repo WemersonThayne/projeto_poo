@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames.dialogs;
+package br.edu.ifpb.views.dialogs;
 
 import java.awt.Color;
 import java.awt.Font;

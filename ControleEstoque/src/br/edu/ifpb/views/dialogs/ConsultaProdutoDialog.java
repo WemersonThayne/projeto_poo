@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames.dialogs;
+package br.edu.ifpb.views.dialogs;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,22 +6,18 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -31,6 +27,8 @@ import com.jgoodies.forms.layout.RowSpec;
 import br.edu.ifpb.controllers.ProdutoController;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
+import br.edu.ifpb.utils.ButtonColumn;
+import br.edu.ifpb.utils.Mensagens;
 
 public class ConsultaProdutoDialog extends javax.swing.JDialog {
 
@@ -42,12 +40,14 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 	private JButton btnNewButtonListarTodos;
 	private JTable table;
 	private List<Produto> produtos = null;
+	private JFrame frame;
 
 	/**
 	 * Create the application.
 	 */
 	public ConsultaProdutoDialog(JFrame frame) {
 		super(frame, true);
+		this.frame = frame;  
 		initialize();
 	}
 
@@ -107,23 +107,28 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		});
 		getContentPane().add(btnNewButtonLimpar, "6, 8, fill, default");
 		
-		/*
-		 * table = new JTable(dados,colunas); table.setBorder(null);
-		 * table.setCellSelectionEnabled(true);
-		 * table.setColumnSelectionAllowed(true);
-		 * table.setFillsViewportHeight(true); table.setEnabled(false);
-		 */
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual"
+				"C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual","",""
 			}
 		));
-		table.getColumnModel().getColumn(3).setPreferredWidth(108);
-		
 
+		table.setEditingColumn(0);
+    	table.getColumnModel().getColumn(0).setPreferredWidth(20);
+		table.getColumnModel().getColumn(1).setPreferredWidth(120);
+		table.getColumnModel().getColumn(2).setPreferredWidth(40);
+		table.getColumnModel().getColumn(3).setPreferredWidth(40);
+		table.getColumnModel().getColumn(4).setPreferredWidth(20);
+		table.getColumnModel().getColumn(5).setPreferredWidth(20);
+
+		table.setRowHeight(25);
+		
+		new ButtonColumn(table, 4,"edit.png");  
+		new ButtonColumn(table, 5,"delet.png");
+		getClickColunaTabela();
 		JScrollPane barraRolagem = new JScrollPane(table);
 
 		JPanel painelFundo = new JPanel();
@@ -157,4 +162,57 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 				});
 			}
 	}
+	
+	private int coluna = -1;
+	private int linha = -1;
+	private void getClickColunaTabela(){
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mouseClicked(java.awt.event.MouseEvent evt) {
+		    	coluna = table.getSelectedColumn();
+		    	linha = table.getSelectedRow();
+		    	chamarDialogEditarDados();
+		    }
+		});
+	}
+	
+	
+	private void chamarDialogEditarDados(){
+    	if(coluna == 4 && linha != -1){
+
+    		Produto produtoEditar = null;
+    		for (Produto produto : produtos) {
+				if(Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()){
+					System.out.println("produto clicado:"+produto);
+					produtoEditar = produto;
+				}
+			}
+    		if(produtoEditar != null){
+    			getEditarCadastroProduto(produtoEditar);
+    		}else{
+    			new Mensagens("Não foi possivel carregar as informações do produto.");
+    		}
+    		/*textFieldNomeProdutoEscolhido.setText();
+    		textFieldValorUnitario.setText(table.getModel().getValueAt(linha, 1).toString());
+    		textFieldQuantidadeProduto.setText(table.getModel().getValueAt(linha, 2).toString());*/
+    	}else{
+    		if(coluna == 5 && linha != -1){
+        		//new EditarCadastroProduto(frame);
+        		/*textFieldNomeProdutoEscolhido.setText(table.getModel().getValueAt(linha, 0).toString());
+        		textFieldValorUnitario.setText(table.getModel().getValueAt(linha, 1).toString());
+        		textFieldQuantidadeProduto.setText(table.getModel().getValueAt(linha, 2).toString());*/
+        	}
+    	}
+    }
+	
+	private void getEditarCadastroProduto(Produto produto){
+		
+		EditarCadastroProduto editarCadastro =	new EditarCadastroProduto(frame,produto);
+		editarCadastro.setBounds(100, 100, 400, 300);
+		editarCadastro.setTitle("Editar dados do cadastro");
+		editarCadastro.setLocationRelativeTo(null);
+		editarCadastro.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		editarCadastro.setVisible(true);
+	}
+	
 }

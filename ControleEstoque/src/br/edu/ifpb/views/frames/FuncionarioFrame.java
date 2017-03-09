@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames;
+package br.edu.ifpb.views.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -13,13 +13,15 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import br.edu.ifpb.frames.dialogs.CadastroProdutoDialog;
-import br.edu.ifpb.frames.dialogs.ConsultaPedidoDialog;
-import br.edu.ifpb.frames.dialogs.ConsultaProdutoDialog;
-import br.edu.ifpb.frames.dialogs.FazerPedidoDialog;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import br.edu.ifpb.views.dialogs.CadastroProdutoDialog;
+import br.edu.ifpb.views.dialogs.ConsultaPedidoDialog;
+import br.edu.ifpb.views.dialogs.ConsultaProdutoDialog;
+import br.edu.ifpb.views.dialogs.FazerPedidoDialog;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
@@ -161,7 +163,7 @@ public class FuncionarioFrame{
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		  
 	    		  consultaProdutoDialog = new ConsultaProdutoDialog(frmFuncionario);
-	    		  consultaProdutoDialog.setBounds(100, 100, 450, 300);
+	    		  consultaProdutoDialog.setBounds(100, 100, 600, 400);
 	    		  consultaProdutoDialog.setTitle("Consultas de Produtos");
 	    		  consultaProdutoDialog.setLocationRelativeTo(null);
 	    		  consultaProdutoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

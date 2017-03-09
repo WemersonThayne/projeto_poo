@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames;
+package br.edu.ifpb.views.frames;
 
 import java.awt.Color;
 import java.awt.EventQueue;

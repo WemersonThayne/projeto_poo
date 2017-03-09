@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames.dialogs;
+package br.edu.ifpb.views.dialogs;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,7 @@ import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
-public class CadastroProdutoDialog extends javax.swing.JDialog {
+public class EditarCadastroProduto extends javax.swing.JDialog {
 
 	/**
 	 * cadastro de produto
@@ -36,17 +36,18 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	private JTextField textFieldNomeProduto;
 	private JTextField textFieldValorUnitario;
 	private JTextField textFieldQuantidadeProduto;
-	private JButton btnNewButtonNovoProduto;
 
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
 
 	List<CategoriaProduto> categorias = null;
+	private Produto produto = null;
 
 	/**
 	 * Create the application.
 	 */
-	public CadastroProdutoDialog(JFrame frame) {
+	public EditarCadastroProduto(JFrame frame, Produto produto) {
 		super(frame, true);
+		this.produto = produto;
 		initialize();
 	}
 
@@ -54,20 +55,42 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		getContentPane().setLayout(new FormLayout(
-				new ColumnSpec[] { FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("113px"),
-						ColumnSpec.decode("199px:grow"), FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
-						FormSpecs.DEFAULT_COLSPEC, },
-				new RowSpec[] { FormSpecs.LINE_GAP_ROWSPEC, RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("max(66dlu;default)"),
-						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"), }));
+		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("113px"),
+				ColumnSpec.decode("199px:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,},
+			new RowSpec[] {
+				FormSpecs.LINE_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("max(66dlu;default)"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),}));
 
-		JLabel lblCadastroProdutos = new JLabel("Cadastro Produtos");
+		JLabel lblCadastroProdutos = new JLabel("Editar Produtos");
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCadastroProdutos.setBackground(Color.BLACK);
 		lblCadastroProdutos.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -99,38 +122,26 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 
 		comboBoxCategoria = new JComboBox<CategoriaProduto>();
 		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
-
-		btnNewButtonNovoProduto = new JButton("Novo Produto");
-		getContentPane().add(btnNewButtonNovoProduto, "3, 14, center, default");
-
-		JButton btnNewButtonSalvar = new JButton("Salvar");
-		getContentPane().add(btnNewButtonSalvar, "4, 14, center, default");
+				
+						JButton btnNewButtonSalvar = new JButton("Salvar");
+						getContentPane().add(btnNewButtonSalvar, "4, 16, fill, default");
 
 		btnNewButtonSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				montaObjeto();
 			}
 		});
-
-		JButton btnNewButtonLimpar = new JButton("Limpar");
-		btnNewButtonLimpar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				limparCampos();
-			}
-		});
-		getContentPane().add(btnNewButtonLimpar, "6, 14, center, default");
-
+		
 		montarCategoria();
+		preencherValoresNaTela();
 	}
 
 	/* Preenche o combo com os departamentos */
 	private void montarCategoria() {
 		categorias = new ArrayList<CategoriaProduto>();
-
 		try {
 			categorias = new CategoriaController().listarTodos();
 		} catch (ControleEstoqueSqlException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -138,14 +149,6 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 			comboBoxCategoria.addItem(categoriaProduto);
 		}
 
-	}
-
-	/* Metodo de limpar todos os campos */
-	private void limparCampos() {
-		comboBoxCategoria.setSelectedIndex(0);
-		textFieldNomeProduto.setText("");
-		textFieldQuantidadeProduto.setText("");
-		textFieldValorUnitario.setText("");
 	}
 
 	/* Valida todos os campos */
@@ -162,19 +165,31 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	/* Monta o objeto para salvar no banco */
 	private void montaObjeto() {
 		if(validarAll()){
+			
 			CategoriaProduto cat = (CategoriaProduto) comboBoxCategoria.getSelectedItem();
 			
-			Produto produto = new Produto();
 			produto.setCategoria(cat);
 			produto.setNome(textFieldNomeProduto.getText().toString());
 			produto.setQuantideAtual(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
+		
 			try {
-				new ProdutoController().creat(produto);
+				if(new ProdutoController().update(produto) == 1){
+					new Mensagens(Util.UPDATE_PRD_SUCESS);
+					dispose();
+				}	
 			} catch (ControleEstoqueSqlException e) {
 				e.printStackTrace();
 			}
 		}
-		
 	}
+
+	private void preencherValoresNaTela(){
+		textFieldNomeProduto.setText(produto.getNome());
+		textFieldQuantidadeProduto.setText(String.valueOf(produto.getQuantideAtual()));
+		textFieldValorUnitario.setText(String.valueOf(produto.getValorUnitario()));
+		comboBoxCategoria.setSelectedIndex(produto.getCategoria().getCodCategoria()-1);
+	}
+	
+	
 }

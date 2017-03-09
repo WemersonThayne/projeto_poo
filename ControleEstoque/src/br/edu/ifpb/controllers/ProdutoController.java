@@ -12,6 +12,11 @@ public class ProdutoController {
 		return ProdutoDAO.getInstance().creat( prod);
 	}
 	
+	public int update(Produto prod) throws ControleEstoqueSqlException {		
+		return ProdutoDAO.getInstance().update(prod);
+	}
+	
+	
 	public List<Produto> listarTodos() throws ControleEstoqueSqlException {
 		return ProdutoDAO.getInstance().listarTodos();
 	}

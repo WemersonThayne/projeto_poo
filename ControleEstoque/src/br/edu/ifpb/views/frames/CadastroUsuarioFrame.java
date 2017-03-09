@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames;
+package br.edu.ifpb.views.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;

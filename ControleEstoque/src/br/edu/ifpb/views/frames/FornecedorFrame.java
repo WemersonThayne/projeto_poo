@@ -1,4 +1,4 @@
-package br.edu.ifpb.frames;
+package br.edu.ifpb.views.frames;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -10,7 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import br.edu.ifpb.frames.dialogs.ConsultaPedidoDialog;
+import br.edu.ifpb.views.dialogs.ConsultaPedidoDialog;
 
 public class FornecedorFrame {
 
