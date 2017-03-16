@@ -36,7 +36,6 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	private JTextField textFieldNomeProduto;
 	private JTextField textFieldValorUnitario;
 	private JTextField textFieldQuantidadeProduto;
-	private JButton btnNewButtonNovoProduto;
 
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
 
@@ -99,9 +98,6 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 
 		comboBoxCategoria = new JComboBox<CategoriaProduto>();
 		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
-
-		btnNewButtonNovoProduto = new JButton("Novo Produto");
-		getContentPane().add(btnNewButtonNovoProduto, "3, 14, center, default");
 
 		JButton btnNewButtonSalvar = new JButton("Salvar");
 		getContentPane().add(btnNewButtonSalvar, "4, 14, center, default");

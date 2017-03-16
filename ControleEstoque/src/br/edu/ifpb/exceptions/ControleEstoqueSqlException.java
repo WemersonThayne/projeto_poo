@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import br.edu.ifpb.utils.Mensagens;
 
 public class ControleEstoqueSqlException  extends SQLException{
@@ -42,6 +44,10 @@ public class ControleEstoqueSqlException  extends SQLException{
 
 		this.errorCode = errorCode;
 		new Mensagens("ERROR>> " + errorCode + ": " + localizedMessage);
+		JOptionPane.showMessageDialog(null,"ERROR",
+				"" + errorCode + ": " + localizedMessage,
+			    JOptionPane.ERROR_MESSAGE);
+		
 	}
 
 	public int getErrorCode() {

@@ -27,7 +27,7 @@ import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
-public class EditarCadastroProduto extends javax.swing.JDialog {
+public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 
 	/**
 	 * cadastro de produto
@@ -39,13 +39,13 @@ public class EditarCadastroProduto extends javax.swing.JDialog {
 
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
 
-	List<CategoriaProduto> categorias = null;
+	private List<CategoriaProduto> categorias = null;
 	private Produto produto = null;
 
 	/**
 	 * Create the application.
 	 */
-	public EditarCadastroProduto(JFrame frame, Produto produto) {
+	public EditarCadastroProdutoDialog(JFrame frame, Produto produto) {
 		super(frame, true);
 		this.produto = produto;
 		initialize();

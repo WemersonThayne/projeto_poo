@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
-import com.sun.glass.events.KeyEvent;
 
 import br.edu.ifpb.controllers.ProdutoController;
 import br.edu.ifpb.entidades.Produto;
@@ -52,7 +50,7 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 	 */
 	public ConsultaProdutoDialog(JFrame frame) {
 		super(frame, true);
-		this.frame = frame;  
+		this.frame = frame;
 		initialize();
 	}
 
@@ -85,10 +83,8 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		textFieldNomeProduto = new JTextField();
 		getContentPane().add(textFieldNomeProduto, "4, 6, fill, default");
 		textFieldNomeProduto.setColumns(10);
-		
-		
+
 		JButton btnNewButtonPesquisar = new JButton("Pesquisar");
-		//btnNewButtonPesquisar.setEnabled(verificaQuantidaCaracter());
 		btnNewButtonPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				consultarProdutos();
@@ -101,8 +97,8 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		getContentPane().add(btnNewButtonListarTodos, "4, 8, fill, default");
 		btnNewButtonListarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					listarTodosProdutos();
-					montarTable();
+				listarTodosProdutos();
+				montarTable();
 			}
 		});
 
@@ -110,24 +106,19 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		btnNewButtonLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textFieldNomeProduto.setText("");
-			    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
-			    modelo.setNumRows(0);
-			    produtos = null;
+				DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+				modelo.setNumRows(0);
+				produtos = null;
 			}
 		});
 		getContentPane().add(btnNewButtonLimpar, "6, 8, fill, default");
-		
+
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual","",""
-			}
-		));
+		table.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual", "", "" }));
 
 		table.setEditingColumn(0);
-    	table.getColumnModel().getColumn(0).setPreferredWidth(20);
+		table.getColumnModel().getColumn(0).setPreferredWidth(20);
 		table.getColumnModel().getColumn(1).setPreferredWidth(120);
 		table.getColumnModel().getColumn(2).setPreferredWidth(40);
 		table.getColumnModel().getColumn(3).setPreferredWidth(40);
@@ -136,8 +127,10 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 
 		table.setRowHeight(30);
 
-		new ButtonColumn(table, 4,new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("edit.png")));  
-		new ButtonColumn(table, 5,new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("delet.png")));
+		new ButtonColumn(table, 4,
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/edit.png")));
+		new ButtonColumn(table, 5,
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/delet.png")));
 		getClickColunaTabela();
 		JScrollPane barraRolagem = new JScrollPane(table);
 
@@ -167,99 +160,85 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		}
 	}
 
-	private void montarTable(){
-		    /* Captura o modelo da tabela */
-		    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
-		    modelo.setNumRows(0);
-			/* Copia os dados da consulta para a tabela */
-			for (Produto prod : produtos) {
-				modelo.addRow(new Object[]{
-					prod.getCodProduto(),
-					prod.getNome(),
-					prod.getValorUnitario(),
-					prod.getQuantideAtual()
-				});
-			}
+	private void montarTable() {
+		/* Captura o modelo da tabela */
+		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+		modelo.setNumRows(0);
+		/* Copia os dados da consulta para a tabela */
+		for (Produto prod : produtos) {
+			modelo.addRow(new Object[] { prod.getCodProduto(), prod.getNome(), prod.getValorUnitario(),
+					prod.getQuantideAtual() });
+		}
 	}
-	
+
 	private int coluna = -1;
 	private int linha = -1;
-	private void getClickColunaTabela(){
+
+	private void getClickColunaTabela() {
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
-		    @Override
-		    public void mouseClicked(java.awt.event.MouseEvent evt) {
-		    	coluna = table.getSelectedColumn();
-		    	linha = table.getSelectedRow();
-		    	chamarDialogEditarDados();
-		    }
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				coluna = table.getSelectedColumn();
+				linha = table.getSelectedRow();
+				chamarDialogEditarDados();
+			}
 		});
 	}
-	
-	
-	private void chamarDialogEditarDados(){
-    	if(coluna == 4 && linha != -1){
 
-    		Produto produtoEditar = null;
-    		for (Produto produto : produtos) {
-				if(Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()){
+	private void chamarDialogEditarDados() {
+		if (coluna == 4 && linha != -1) {
+
+			Produto produtoEditar = null;
+			for (Produto produto : produtos) {
+				if (Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()) {
 					produtoEditar = produto;
 				}
 			}
-    		if(produtoEditar != null){
-    			getEditarCadastroProduto(produtoEditar);
-    		}else{
-    			new Mensagens("Não foi possivel carregar as informações do produto.");
-    		}
-    		
-    	}else{
-    		if(coluna == 5 && linha != -1){
-    			Produto produtoExcluir = null;
-        		for (Produto produto : produtos) {
-    				if(Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()){
-    					produtoExcluir = produto;
-    				}
-    			}
-        		if(produtoExcluir != null){
-        			try {
+			if (produtoEditar != null) {
+				getEditarCadastroProduto(produtoEditar);
+			} else {
+				new Mensagens("Não foi possivel carregar as informações do produto.");
+			}
+
+		} else {
+			if (coluna == 5 && linha != -1) {
+				Produto produtoExcluir = null;
+				for (Produto produto : produtos) {
+					if (Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()) {
+						produtoExcluir = produto;
+					}
+				}
+				if (produtoExcluir != null) {
+					try {
 						getDeletarProduto(produtoExcluir);
 					} catch (ControleEstoqueSqlException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-        		}else{
-        			new Mensagens("Não foi possivel carregar as informações do produto.");
-        		}
-        	}
-    	}
-    }
-	
-	private void getEditarCadastroProduto(Produto produto){
-		
-		EditarCadastroProduto editarCadastro =	new EditarCadastroProduto(frame,produto);
+				} else {
+					new Mensagens("Não foi possivel carregar as informações do produto.");
+				}
+			}
+		}
+	}
+
+	private void getEditarCadastroProduto(Produto produto) {
+
+		EditarCadastroProdutoDialog editarCadastro = new EditarCadastroProdutoDialog(frame, produto);
 		editarCadastro.setBounds(100, 100, 400, 300);
 		editarCadastro.setTitle("Editar dados do cadastro");
 		editarCadastro.setLocationRelativeTo(null);
 		editarCadastro.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		editarCadastro.setVisible(true);
 	}
-	
-	private void getDeletarProduto(Produto produtoDeletar) throws ControleEstoqueSqlException{
-		int result = JOptionPane.showConfirmDialog(null,"Deseja Deletar esse produto?  "+produtoDeletar.getNome(),"Excluir",JOptionPane.YES_NO_CANCEL_OPTION);   
-		
-		if(result ==JOptionPane.YES_OPTION){
+
+	private void getDeletarProduto(Produto produtoDeletar) throws ControleEstoqueSqlException {
+		int result = JOptionPane.showConfirmDialog(null, "Deseja Deletar esse produto?  " + produtoDeletar.getNome(),
+				"Excluir", JOptionPane.YES_NO_CANCEL_OPTION);
+		if (result == JOptionPane.YES_OPTION) {
 			System.out.println("Deletou");
-			if(new ProdutoController().delete(produtoDeletar) == 1){
+			if (new ProdutoController().delete(produtoDeletar) == 1) {
 				new Mensagens(Util.DELETE_PRD_SUCESS);
-			}			
+			}
 		}
-			
-			
 	}
-	
-	/*private boolean verificaQuantidaCaracter(){
-		if(textFieldNomeProduto.getText().toString().length() >= 1){
-			return true;
-		}
-		return false;
-	}*/
 }
