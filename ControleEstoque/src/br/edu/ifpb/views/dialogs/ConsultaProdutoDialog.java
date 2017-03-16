@@ -5,13 +5,16 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -23,12 +26,14 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+import com.sun.glass.events.KeyEvent;
 
 import br.edu.ifpb.controllers.ProdutoController;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ButtonColumn;
 import br.edu.ifpb.utils.Mensagens;
+import br.edu.ifpb.utils.Util;
 
 public class ConsultaProdutoDialog extends javax.swing.JDialog {
 
@@ -80,11 +85,14 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		textFieldNomeProduto = new JTextField();
 		getContentPane().add(textFieldNomeProduto, "4, 6, fill, default");
 		textFieldNomeProduto.setColumns(10);
-
+		
+		
 		JButton btnNewButtonPesquisar = new JButton("Pesquisar");
+		//btnNewButtonPesquisar.setEnabled(verificaQuantidaCaracter());
 		btnNewButtonPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				consultarProdutos();
+				montarTable();
 			}
 		});
 		getContentPane().add(btnNewButtonPesquisar, "6, 6, fill, default");
@@ -93,16 +101,18 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		getContentPane().add(btnNewButtonListarTodos, "4, 8, fill, default");
 		btnNewButtonListarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					consultarProdutos();
+					listarTodosProdutos();
 					montarTable();
-					
-
 			}
 		});
 
 		JButton btnNewButtonLimpar = new JButton("Limpar");
 		btnNewButtonLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				textFieldNomeProduto.setText("");
+			    DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+			    modelo.setNumRows(0);
+			    produtos = null;
 			}
 		});
 		getContentPane().add(btnNewButtonLimpar, "6, 8, fill, default");
@@ -124,10 +134,10 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		table.getColumnModel().getColumn(4).setPreferredWidth(20);
 		table.getColumnModel().getColumn(5).setPreferredWidth(20);
 
-		table.setRowHeight(25);
-		
-		new ButtonColumn(table, 4,"edit.png");  
-		new ButtonColumn(table, 5,"delet.png");
+		table.setRowHeight(30);
+
+		new ButtonColumn(table, 4,new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("edit.png")));  
+		new ButtonColumn(table, 5,new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("delet.png")));
 		getClickColunaTabela();
 		JScrollPane barraRolagem = new JScrollPane(table);
 
@@ -140,6 +150,15 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 	}
 
 	private void consultarProdutos() {
+		produtos = new ArrayList<Produto>();
+		try {
+			produtos = new ProdutoController().readByName(textFieldNomeProduto.getText().toString().trim());
+		} catch (ControleEstoqueSqlException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void listarTodosProdutos() {
 		produtos = new ArrayList<Produto>();
 		try {
 			produtos = new ProdutoController().listarTodos();
@@ -183,7 +202,6 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
     		Produto produtoEditar = null;
     		for (Produto produto : produtos) {
 				if(Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()){
-					System.out.println("produto clicado:"+produto);
 					produtoEditar = produto;
 				}
 			}
@@ -192,15 +210,25 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
     		}else{
     			new Mensagens("Não foi possivel carregar as informações do produto.");
     		}
-    		/*textFieldNomeProdutoEscolhido.setText();
-    		textFieldValorUnitario.setText(table.getModel().getValueAt(linha, 1).toString());
-    		textFieldQuantidadeProduto.setText(table.getModel().getValueAt(linha, 2).toString());*/
+    		
     	}else{
     		if(coluna == 5 && linha != -1){
-        		//new EditarCadastroProduto(frame);
-        		/*textFieldNomeProdutoEscolhido.setText(table.getModel().getValueAt(linha, 0).toString());
-        		textFieldValorUnitario.setText(table.getModel().getValueAt(linha, 1).toString());
-        		textFieldQuantidadeProduto.setText(table.getModel().getValueAt(linha, 2).toString());*/
+    			Produto produtoExcluir = null;
+        		for (Produto produto : produtos) {
+    				if(Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()){
+    					produtoExcluir = produto;
+    				}
+    			}
+        		if(produtoExcluir != null){
+        			try {
+						getDeletarProduto(produtoExcluir);
+					} catch (ControleEstoqueSqlException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        		}else{
+        			new Mensagens("Não foi possivel carregar as informações do produto.");
+        		}
         	}
     	}
     }
@@ -215,4 +243,23 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		editarCadastro.setVisible(true);
 	}
 	
+	private void getDeletarProduto(Produto produtoDeletar) throws ControleEstoqueSqlException{
+		int result = JOptionPane.showConfirmDialog(null,"Deseja Deletar esse produto?  "+produtoDeletar.getNome(),"Excluir",JOptionPane.YES_NO_CANCEL_OPTION);   
+		
+		if(result ==JOptionPane.YES_OPTION){
+			System.out.println("Deletou");
+			if(new ProdutoController().delete(produtoDeletar) == 1){
+				new Mensagens(Util.DELETE_PRD_SUCESS);
+			}			
+		}
+			
+			
+	}
+	
+	/*private boolean verificaQuantidaCaracter(){
+		if(textFieldNomeProduto.getText().toString().length() >= 1){
+			return true;
+		}
+		return false;
+	}*/
 }

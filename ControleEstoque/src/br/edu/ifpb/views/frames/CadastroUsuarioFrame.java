@@ -458,7 +458,7 @@ public class CadastroUsuarioFrame  {
 		      };
 		      for (int i = 0; i <= 3000; i++) {
 		    	  if(i == 3000){
-		    		  if(validarAll()){
+		    		  if(!validarAll()){
 		    			  montaObjeto();
 		    			  frmCadastroDeUsurio.dispose();
 			              new Mensagens("Cadastro Efetuado com Sucesso...");

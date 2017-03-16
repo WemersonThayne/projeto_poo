@@ -16,6 +16,12 @@ public class ProdutoController {
 		return ProdutoDAO.getInstance().update(prod);
 	}
 	
+	public List<Produto> readByName(String nomeProduto) throws ControleEstoqueSqlException {		
+		return ProdutoDAO.getInstance().readByName(nomeProduto);
+	}
+	public int delete(Produto prod) throws ControleEstoqueSqlException {		
+		return ProdutoDAO.getInstance().delete(prod);
+	}
 	
 	public List<Produto> listarTodos() throws ControleEstoqueSqlException {
 		return ProdutoDAO.getInstance().listarTodos();

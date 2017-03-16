@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -19,13 +20,9 @@ public class ProdutoDAO {
 
 	private final String INSERT = "INSERT INTO PRODUTO (NOME,VALORUNITARIO , CODCATEGORIA, QUANTIDADE) VALUES (?,?,?,?)";
 	private final String LIST = "SELECT * FROM PRODUTO ORDER BY codProduto";
-	private final String READBYID = "SELECT * FROM PRODUTO WHERE codProduto = ?";
-	private final String UPDATE = "UPDATE PRODUTO SET NOME=?, VALORUNITARIO=?, CODCATEGORIA=?, QUANTIDADE=? WHERE codProduto=?";
-
-	/*
-	 * private final String DELETE = "DELETE FROM CONTATO WHERE ID =?";
-	 * 
-	 */
+	private final String READBYNAME = "SELECT * FROM PRODUTO WHERE NOME LIKE ?";
+	private final String UPDATE = "UPDATE PRODUTO SET NOME=?, VALORUNITARIO=?, CODCATEGORIA=?, QUANTIDADE=? WHERE CODPRODUTO=?";
+	private final String DELETE = "DELETE FROM PRODUTO WHERE CODPRODUTO =?";
 
 	private static ProdutoDAO instance;
 
@@ -118,32 +115,33 @@ public class ProdutoDAO {
 		return produtos;
 	}
 
-	public Produto readById(Produto produto) {
+	public List<Produto> readByName(String nomeProduto) throws ControleEstoqueSqlException {
 
-		Produto produtoRetorno = new Produto();
+		ArrayList<Produto> produtos = new ArrayList<Produto>();
 
 		connection = null;
 
 		try {
-
 			connection = (Connection) new ConnectionFactory().getConnection();
 
-			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(READBYID);
-			pstm.setInt(1, produto.getCodProduto());
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(READBYNAME);
+			pstm.setString(1, "%"+nomeProduto+"%");
 
 			ResultSet rs = pstm.executeQuery();
 
-			if (rs.next()) {
+			while (rs.next()) {
 
 				CategoriaProduto c = new CategoriaProduto();
+				Produto produto = new Produto();
 
-				produtoRetorno.setCodProduto(rs.getInt("codProduto"));
-				produtoRetorno.setNome(rs.getString("nome"));
-				produtoRetorno.setQuantideAtual(rs.getInt("quantidade"));
-				produtoRetorno.setValorUnitario(rs.getDouble("valorUnitario"));
+				produto.setCodProduto(rs.getInt("codProduto"));
+				produto.setNome(rs.getString("nome"));
+				produto.setQuantideAtual(rs.getInt("quantidade"));
+				produto.setValorUnitario(rs.getDouble("valorUnitario"));
 				c.setCodCategoria(rs.getInt("codCategoria"));
-				produtoRetorno.setCategoria(c);
+				produto.setCategoria(c);
 
+				produtos.add(produto);
 			}
 
 			pstm.close();
@@ -151,11 +149,10 @@ public class ProdutoDAO {
 			connection.close();
 
 		} catch (SQLException sqle) {
-			throw new RuntimeException(sqle);
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
 		}
 
-		return produtoRetorno;
-
+		return produtos;
 	}
 
 	public int update(Produto produto) throws ControleEstoqueSqlException {
@@ -184,4 +181,28 @@ public class ProdutoDAO {
 		
 		return chave;
 	}
+	
+	public int delete(Produto produto) throws ControleEstoqueSqlException {
+
+		connection = null;
+		int chave = 0;
+		try {
+
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(DELETE);
+			
+			pstm.setInt(1, produto.getCodProduto());
+			pstm.execute();
+			chave = Statement.RETURN_GENERATED_KEYS;
+			pstm.close();
+			connection.close();
+
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+		
+		return chave;
+	}
+	
 }

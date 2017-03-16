@@ -27,6 +27,7 @@ import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.exceptions.MensagenException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
+import javax.swing.ImageIcon;
 
 public class LoginFrame {
 

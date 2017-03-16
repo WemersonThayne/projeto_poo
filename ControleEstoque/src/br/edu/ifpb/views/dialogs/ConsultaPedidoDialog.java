@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -142,7 +143,7 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog{
 		table.getColumnModel().getColumn(3).setPreferredWidth(20);
 		table.setRowHeight(25);
 		
-		new ButtonColumn(table, 3,"search.png");  
+		new ButtonColumn(table, 3,new ImageIcon(ConsultaPedidoDialog.class.getResource("search.png")));  
     }
     
    
