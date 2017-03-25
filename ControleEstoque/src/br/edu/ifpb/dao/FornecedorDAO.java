@@ -15,14 +15,7 @@ public class FornecedorDAO {
 
 	private final String INSERT = "INSERT INTO FORNECEDOR (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, NOMELOJA, LOGIN, SENHA) VALUES (?,?,?,?,?,?,?,?,?)";
 	private final String LISTBYLOGIN = "SELECT ID, NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, NOMELOJA FROM FORNECEDOR WHERE LOGIN=? AND SENHA=?";
-
-	/*
-	 * private final String UPDATE =
-	 * "UPDATE CONTATO SET NOME=?, TELEFONE=?, EMAIL=? WHERE ID=?"; private
-	 * final String DELETE = "DELETE FROM CONTATO WHERE ID =?"; private final
-	 * String LIST = "SELECT * FROM CONTATO"; private final String LISTBYID =
-	 * "SELECT * FROM CONTATO WHERE ID=?";
-	 */
+	private final String UPDATE = "UPDATE FUNCIONARIO SET NOME=?, CPF=?, ENDERECO=?, DATANASCIMENTO=?, TELEFONE=?, EMAIL=?, LOGIN=?, SENHA=?, IDDEPARTAMENTO=? WHERE ID=?";
 
 	private static FornecedorDAO instance;
 
@@ -122,5 +115,36 @@ public class FornecedorDAO {
 		return fornecedorConsulta;
 
 	}
+	
+	public int update(Fornecedor fornecedor) throws ControleEstoqueSqlException {
 
+		connection = null;
+		int chave = 0;
+		try {
+
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(UPDATE);
+			
+			pstm.setString(1, fornecedor.getNome());
+			pstm.setString(2, fornecedor.getCpf());
+			pstm.setString(3, fornecedor.getEndereco());
+			pstm.setString(4, fornecedor.getDataNascimento());
+			pstm.setString(5, fornecedor.getTelefone());
+			pstm.setString(6, fornecedor.getEmail());
+			pstm.setString(7, fornecedor.getNomeLoja());
+			pstm.setString(8, fornecedor.getLogin());
+			pstm.setString(9, fornecedor.getSenha());
+			
+			pstm.execute();
+			chave = Statement.RETURN_GENERATED_KEYS;
+			pstm.close();
+			connection.close();
+
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+		
+		return chave;
+	}
 }

@@ -6,35 +6,16 @@ import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 
 public class FuncionarioController {
 
-	/*	public ArrayList<Usuario> listarTodos() throws SQLException {
-	return UsuarioDAO.getInstance().listarTodos();
-}
-
-public ArrayList<Usuario> readById(Usuario user) {
-	return UsuarioDAO.getInstance().readById(user);
-}
-*/
 	public int creat(Funcionario funcionario) throws ControleEstoqueSqlException {		
 		return FuncionarioDAO.getInstance().creat( funcionario);
 	}
+	
 	public Funcionario verificaLogin(Funcionario usuario) throws ControleEstoqueSqlException {
 		return FuncionarioDAO.getInstance().verificarLogin(usuario);
 	}
-/*
-public String delete(Usuario user) {
-	UsuarioDAO.getInstance().delete(user);
-	return "Deletado com sucesso";
-}*/
 
-/*	public String update(Usuario user) {
-	UsuarioDAO.getInstance().update(user);
-	return "Atualizado com sucesso";
-}
-
-
-
-public List<Usuario> consultarUsuariosByNome(Usuario usuario) throws SQLException {
-	return UsuarioDAO.getInstance().consultarUsuariosByNome(usuario);
-}*/
+	public int update(Funcionario funcionario) throws ControleEstoqueSqlException {		
+		return FuncionarioDAO.getInstance().update(funcionario);
+	}
 
 }

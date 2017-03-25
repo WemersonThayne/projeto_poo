@@ -10,7 +10,11 @@ public class FornecedorController {
 		return FornecedorDAO.getInstance().creat( fornecedor);
 	}
 	
-	public Fornecedor verificaLogin(Fornecedor usuario) throws ControleEstoqueSqlException {
-		return FornecedorDAO.getInstance().verificarLogin(usuario);
+	public Fornecedor verificaLogin(Fornecedor funcionario) throws ControleEstoqueSqlException {
+		return FornecedorDAO.getInstance().verificarLogin(funcionario);
+	}
+	
+	public int update(Fornecedor funcionario) throws ControleEstoqueSqlException {		
+		return FornecedorDAO.getInstance().update(funcionario);
 	}
 }

@@ -38,6 +38,7 @@ public class LoginFrame {
 	private JButton btnEntrar;
 	private JLabel lblLogin;
 	private JLabel lblSenha;
+	private JLabel lblAula;
 
 	/**
 	 * Launch the application.
@@ -85,6 +86,9 @@ public class LoginFrame {
 						RowSpec.decode("23px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
 						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
 						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, }));
+		
+		lblAula = new JLabel("Aula");
+		frmLogin.getContentPane().add(lblAula, "8, 4");
 
 		lblLogin = new JLabel("Login:");
 		frmLogin.getContentPane().add(lblLogin, "4, 6, left, default");

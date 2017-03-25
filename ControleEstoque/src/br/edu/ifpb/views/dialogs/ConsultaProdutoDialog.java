@@ -128,9 +128,9 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		table.setRowHeight(30);
 
 		new ButtonColumn(table, 4,
-				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/edit.png")));
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("edit.png")));
 		new ButtonColumn(table, 5,
-				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/delet.png")));
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("delet.png")));
 		getClickColunaTabela();
 		JScrollPane barraRolagem = new JScrollPane(table);
 
