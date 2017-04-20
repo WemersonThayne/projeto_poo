@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs;
+package br.edu.ifpb.views.dialogs.produto;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,8 +20,10 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.controllers.CategoriaController;
+import br.edu.ifpb.controllers.FornecedorController;
 import br.edu.ifpb.controllers.ProdutoController;
 import br.edu.ifpb.entidades.CategoriaProduto;
+import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
@@ -38,16 +40,21 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 	private JTextField textFieldQuantidadeProduto;
 
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
+	private JComboBox<Fornecedor> comboBoxForncedor;
+
 
 	private List<CategoriaProduto> categorias = null;
+	private List<Fornecedor> fornecedores = null;
+	private int quantidaAtual = 0;
 	private Produto produto = null;
 
 	/**
 	 * Create the application.
 	 */
-	public EditarCadastroProdutoDialog(JFrame frame, Produto produto) {
+	public EditarCadastroProdutoDialog(JFrame frame, Produto produto,int quantidadeAtual) {
 		super(frame, true);
 		this.produto = produto;
+		this.quantidaAtual = quantidadeAtual;
 		initialize();
 	}
 
@@ -116,15 +123,21 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		textFieldQuantidadeProduto = new JTextField();
 		getContentPane().add(textFieldQuantidadeProduto, "4, 10, left, default");
 		textFieldQuantidadeProduto.setColumns(10);
-
+		
 		JLabel lblCategoria = new JLabel("Categoria:");
 		getContentPane().add(lblCategoria, "3, 12, left, default");
 
 		comboBoxCategoria = new JComboBox<CategoriaProduto>();
 		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
+		
+		JLabel lblFornecedor = new JLabel("Fornecedor:");
+		getContentPane().add(lblFornecedor, "3, 14, left, default");
+		
+		comboBoxForncedor = new JComboBox<Fornecedor>();
+		getContentPane().add(comboBoxForncedor, "4, 14, 2, 1, fill, default");
 				
-						JButton btnNewButtonSalvar = new JButton("Salvar");
-						getContentPane().add(btnNewButtonSalvar, "4, 16, fill, default");
+		JButton btnNewButtonSalvar = new JButton("Salvar");
+		getContentPane().add(btnNewButtonSalvar, "4, 16, fill, default");
 
 		btnNewButtonSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -133,6 +146,7 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		});
 		
 		montarCategoria();
+		montarFornecedores();
 		preencherValoresNaTela();
 	}
 
@@ -151,6 +165,22 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 
 	}
 
+	/* Preenche o combo com os fornecedores cadastrados */
+	private void montarFornecedores() {
+		fornecedores = new ArrayList<Fornecedor>();
+
+		try {
+			fornecedores = new FornecedorController().listarTodos();
+		} catch (ControleEstoqueSqlException e1) {
+			e1.printStackTrace();
+		}
+
+		for (Fornecedor fornecedor : fornecedores) {
+			comboBoxForncedor.addItem(fornecedor);
+		}
+
+	}
+	
 	/* Valida todos os campos */
 	private boolean validarAll() {
 		if (Util.validarCampos(textFieldNomeProduto) && Util.validarCampos(textFieldQuantidadeProduto)
@@ -167,14 +197,15 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		if(validarAll()){
 			
 			CategoriaProduto cat = (CategoriaProduto) comboBoxCategoria.getSelectedItem();
-			
+			Fornecedor f = (Fornecedor) comboBoxForncedor.getSelectedItem();
+
 			produto.setCategoria(cat);
+			produto.setFornecedor(f);
 			produto.setNome(textFieldNomeProduto.getText().toString());
-			produto.setQuantideAtual(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
 		
 			try {
-				if(new ProdutoController().update(produto) == 1){
+				if(new ProdutoController().update(produto,Integer.parseInt(textFieldQuantidadeProduto.getText().toString())) == 1){
 					new Mensagens(Util.UPDATE_PRD_SUCESS);
 					dispose();
 				}	
@@ -186,10 +217,9 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 
 	private void preencherValoresNaTela(){
 		textFieldNomeProduto.setText(produto.getNome());
-		textFieldQuantidadeProduto.setText(String.valueOf(produto.getQuantideAtual()));
-		textFieldValorUnitario.setText(String.valueOf(produto.getValorUnitario()));
+		textFieldQuantidadeProduto.setText(String.valueOf(quantidaAtual));
+		textFieldValorUnitario.setText(String.valueOf(produto.getValorUnitario()).replaceAll(".", ","));
 		comboBoxCategoria.setSelectedIndex(produto.getCategoria().getCodCategoria()-1);
 	}
-	
 	
 }

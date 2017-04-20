@@ -1,17 +1,17 @@
-package br.edu.ifpb.views.dialogs;
+package br.edu.ifpb.views.dialogs.pedido;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,22 +20,21 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.utils.ButtonColumn;
 
-public class ConsultaPedidoDialog extends javax.swing.JDialog{
+public class VisualizarListaProdutoPedidoDialog extends javax.swing.JDialog{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textFieldNomeProduto;
 	private JTable table;
+	private List<Produto> produtos  = new ArrayList<Produto>();
 
 	/**
 	 * Create the application.
 	 */
-	public ConsultaPedidoDialog(JFrame frame) {
+	public VisualizarListaProdutoPedidoDialog(JFrame frame, List<Produto> produtos) {
 		super(frame, true);
+		this.produtos = produtos;
 		initialize();
 	}
 
@@ -62,8 +61,6 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog{
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("max(66dlu;default)"),
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				FormSpecs.DEFAULT_ROWSPEC,
@@ -82,28 +79,18 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog{
 				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("max(27dlu;default):grow"),}));
 		
-		JLabel lblCadastroProdutos = new JLabel("Consultar Pedidos");
+		JLabel lblCadastroProdutos = new JLabel("Lista de Produto no Pedido");
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCadastroProdutos.setBackground(Color.BLACK);
 		lblCadastroProdutos.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		getContentPane().add(lblCadastroProdutos, "4, 2, center, top");
-		
-		JLabel lblNewLabel = new JLabel("Produto:");
-		getContentPane().add(lblNewLabel, "3, 6, left, default");
-		
-		textFieldNomeProduto = new JTextField();
-		getContentPane().add(textFieldNomeProduto, "4, 6, fill, default");
-		textFieldNomeProduto.setColumns(10);
-		
-		JButton btnNewButtonPesquisar = new JButton("Pesquisar");
-		getContentPane().add(btnNewButtonPesquisar, "6, 6, center, default");
+		getContentPane().add(lblCadastroProdutos, "3, 2, 2, 1, fill, top");
 
 		JPanel painelFundo = new JPanel();
 		painelFundo.setSize(500, 500);
         painelFundo.setLayout(new GridLayout(1, 1));
  
        
-		getContentPane().add(painelFundo, "3, 8, 5, 5, fill, fill");
+		getContentPane().add(painelFundo, "3, 6, 5, 5, fill, fill");
 		
 		criaJTable();
 
@@ -111,40 +98,53 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog{
 		barraRolagem.setSize(500, 500);
 		painelFundo.add(barraRolagem);
 		
+		getClickColunaTabela();
 		
 	}
 	
     private void criaJTable() {
 
-    	 Object [] colunas = {"Cod do Pedido", "Data do Pedido", "Fornecedor",""};
+    	table = new JTable();
+		table.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual", "" }));
 
-    	 Object [][] dados = {
-    			{"1", "20/02/2017", "FULANO",""},
-    			{"2", "20/02/2017", "FULANO",""},
-    			{"3", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"4", "20/02/2017", "FULANO",""},
-    			{"5", "20/02/2017", "FULANO",""}
-   
-    		};
-
-    	DefaultTableModel model = new DefaultTableModel(dados, colunas);  
-        table = new JTable( model );
-      
-     	table.setEditingColumn(0);
-    	table.getColumnModel().getColumn(0).setPreferredWidth(20);
+		table.setEditingColumn(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(20);
 		table.getColumnModel().getColumn(1).setPreferredWidth(120);
-		table.getColumnModel().getColumn(2).setPreferredWidth(80);
-		table.getColumnModel().getColumn(3).setPreferredWidth(20);
-		table.setRowHeight(25);
-		
-		new ButtonColumn(table, 3,new ImageIcon(ConsultaPedidoDialog.class.getResource("search.png")));  
+		table.getColumnModel().getColumn(2).setPreferredWidth(40);
+		table.getColumnModel().getColumn(3).setPreferredWidth(40);
+		table.getColumnModel().getColumn(4).setPreferredWidth(20);
+
+
+		table.setRowHeight(30);
+
+		new ButtonColumn(table, 4,new ImageIcon(VisualizarListaProdutoPedidoDialog.class.getClassLoader().getResource("imagens/delet.png")));
+
+		/* Captura o modelo da tabela */
+		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+		modelo.setNumRows(0);
+		/* Copia os dados da consulta para a tabela */
+		for (Produto prod : produtos) {
+			modelo.addRow(new Object[] { prod.getCodProduto(), prod.getNome(), prod.getValorUnitario(),
+					prod.getQuantideAtual() });
+		}
     }
-    
-   
+
+
+	private void getClickColunaTabela() {
+		table.addMouseListener(new java.awt.event.MouseAdapter() {
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				if (table.getSelectedColumn() == 4 && table.getSelectedRow() != -1) {
+					produtos.remove(table.getSelectedRow());
+					System.out.println("produtos.isEmpty():"+produtos.isEmpty());
+					if(!produtos.isEmpty()){
+						criaJTable();
+					}else{
+						dispose();
+					}
+				}
+			}
+		});
+	}
 }

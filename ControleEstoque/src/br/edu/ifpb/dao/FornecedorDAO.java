@@ -3,6 +3,8 @@ package br.edu.ifpb.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -11,12 +13,13 @@ import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
 
-public class FornecedorDAO {
+public class FornecedorDAO implements DAOInterface<Fornecedor> {
 
 	private final String INSERT = "INSERT INTO FORNECEDOR (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, NOMELOJA, LOGIN, SENHA) VALUES (?,?,?,?,?,?,?,?,?)";
 	private final String LISTBYLOGIN = "SELECT ID, NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, NOMELOJA FROM FORNECEDOR WHERE LOGIN=? AND SENHA=?";
+	private final String LISTBYID = "SELECT * FROM FORNECEDOR WHERE id=?";
 	private final String UPDATE = "UPDATE FUNCIONARIO SET NOME=?, CPF=?, ENDERECO=?, DATANASCIMENTO=?, TELEFONE=?, EMAIL=?, LOGIN=?, SENHA=?, IDDEPARTAMENTO=? WHERE ID=?";
-
+	private final String LISTALL = "SELECT * FROM FORNECEDOR";
 	private static FornecedorDAO instance;
 
 	public static FornecedorDAO getInstance() {
@@ -32,6 +35,7 @@ public class FornecedorDAO {
 	public FornecedorDAO() {
 	}
 
+	@Override
 	public int creat(Fornecedor pessoa) throws ControleEstoqueSqlException {
 
 		int chave = 0;
@@ -116,6 +120,46 @@ public class FornecedorDAO {
 
 	}
 	
+	public Fornecedor consultaByID(int id) throws ControleEstoqueSqlException {
+
+		Fornecedor fornecedorConsulta = null;
+		connection = null;
+
+			try {
+
+				connection = (Connection) new ConnectionFactory().getConnection();
+
+				// prepared statement para consulta do login no banco
+				PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(LISTBYID);
+				pstm.setInt(1,id);
+
+
+				ResultSet rs = pstm.executeQuery();
+				if (rs.next()) {
+
+					fornecedorConsulta = new Fornecedor();
+					fornecedorConsulta.setCodPessoa(rs.getInt("id"));
+					fornecedorConsulta.setLogin(rs.getString("login"));
+					fornecedorConsulta.setNome(rs.getString("nome"));
+					fornecedorConsulta.setEmail(rs.getString("email"));
+					fornecedorConsulta.setTelefone(rs.getString("telefone"));
+					fornecedorConsulta.setCpf(rs.getString("cpf"));
+					fornecedorConsulta.setEndereco(rs.getString("endereco"));
+					fornecedorConsulta.setDataNascimento(rs.getString("dataNascimento"));
+					fornecedorConsulta.setSenha(rs.getString("senha"));
+					fornecedorConsulta.setNomeLoja(rs.getString("nomeLoja"));
+				}
+
+				pstm.close();
+				rs.close();
+				connection.close();
+			} catch (SQLException sqle) {
+				throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+			}
+		return fornecedorConsulta;
+	}
+	
+	@Override
 	public int update(Fornecedor fornecedor) throws ControleEstoqueSqlException {
 
 		connection = null;
@@ -147,4 +191,53 @@ public class FornecedorDAO {
 		
 		return chave;
 	}
+	
+	@Override
+	public List<Fornecedor> listarTodos() throws ControleEstoqueSqlException {
+
+		List<Fornecedor> fornecedores = null;
+		connection = null;
+
+		try {
+
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			// prepared statement para inserção
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(LISTALL);
+
+			// envia para o Banco e fecha o objeto
+			pstm.execute();
+
+			ResultSet rs = pstm.executeQuery();
+			fornecedores = new ArrayList<Fornecedor>();
+			while (rs.next()) {
+
+				Fornecedor fornecedor = new Fornecedor();
+				fornecedor.setCodPessoa(rs.getInt("id"));
+				fornecedor.setNome(rs.getString("nome"));
+				fornecedor.setCpf(rs.getString("cpf"));
+				fornecedor.setEndereco(rs.getString("endereco"));
+				fornecedor.setDataNascimento(rs.getString("dataNascimento"));
+				fornecedor.setTelefone(rs.getString("telefone"));
+				fornecedor.setEmail(rs.getString("email"));
+				fornecedor.setNomeLoja(rs.getString("nomeLoja"));
+				fornecedor.setLogin(rs.getString("login"));
+				fornecedor.setSenha(rs.getString("senha"));
+				fornecedores.add(fornecedor);
+			}
+
+			pstm.close();
+			connection.close();
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+
+		return fornecedores;
+	}
+
+	@Override
+	public int delete(Fornecedor t) throws ControleEstoqueSqlException {
+		return 0;
+	}
+	
 }

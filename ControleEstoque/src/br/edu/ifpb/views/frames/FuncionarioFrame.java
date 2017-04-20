@@ -17,10 +17,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 
-import br.edu.ifpb.views.dialogs.CadastroProdutoDialog;
-import br.edu.ifpb.views.dialogs.ConsultaPedidoDialog;
-import br.edu.ifpb.views.dialogs.ConsultaProdutoDialog;
-import br.edu.ifpb.views.dialogs.FazerPedidoDialog;
+import br.edu.ifpb.views.dialogs.pedido.ConsultaPedidoDialog;
+import br.edu.ifpb.views.dialogs.pedido.FazerPedidoDialog;
+import br.edu.ifpb.views.dialogs.produto.CadastroProdutoDialog;
+import br.edu.ifpb.views.dialogs.produto.ConsultaProdutoDialog;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JButton;
@@ -92,8 +92,6 @@ public class FuncionarioFrame{
 		JSeparator separator = new JSeparator();
 		panelPrincipal.add(separator, "1, 4, 4, 1, fill, default");
 		
-		JButton btnMeusDados = new JButton("Meus Dados");
-		panelPrincipal.add(btnMeusDados, "1, 6");
 		
 		JMenuBar menuBar= new JMenuBar();
 		frmFuncionario.setJMenuBar(menuBar);

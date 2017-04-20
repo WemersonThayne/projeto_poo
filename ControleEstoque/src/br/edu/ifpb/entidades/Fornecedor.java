@@ -22,7 +22,8 @@ public class Fornecedor extends Pessoa {
 
 	@Override
 	public String toString() {
-		return super.toString()+ "Fornecedor [nomeLoja=" + nomeLoja + "]";
+		return getNome().toUpperCase();
 	}
+	
 	
 }

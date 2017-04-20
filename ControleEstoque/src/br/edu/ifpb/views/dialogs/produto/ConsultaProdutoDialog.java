@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs;
+package br.edu.ifpb.views.dialogs.produto;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,7 +6,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,6 +29,8 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.controllers.ProdutoController;
+import br.edu.ifpb.entidades.Estoque;
+import br.edu.ifpb.entidades.ItemEstoque;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ButtonColumn;
@@ -42,7 +46,8 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 	private JTextField textFieldNomeProduto;
 	private JButton btnNewButtonListarTodos;
 	private JTable table;
-	private List<Produto> produtos = null;
+	private List<Produto> produtos = new ArrayList<Produto>();
+	private Estoque estoque;
 	private JFrame frame;
 
 	/**
@@ -121,16 +126,16 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		table.getColumnModel().getColumn(0).setPreferredWidth(20);
 		table.getColumnModel().getColumn(1).setPreferredWidth(120);
 		table.getColumnModel().getColumn(2).setPreferredWidth(40);
-		table.getColumnModel().getColumn(3).setPreferredWidth(40);
+		table.getColumnModel().getColumn(3).setPreferredWidth(60);
 		table.getColumnModel().getColumn(4).setPreferredWidth(20);
 		table.getColumnModel().getColumn(5).setPreferredWidth(20);
 
 		table.setRowHeight(30);
 
 		new ButtonColumn(table, 4,
-				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("edit.png")));
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/edit.png")));
 		new ButtonColumn(table, 5,
-				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("delet.png")));
+				new ImageIcon(ConsultaProdutoDialog.class.getClassLoader().getResource("imagens/delet.png")));
 		getClickColunaTabela();
 		JScrollPane barraRolagem = new JScrollPane(table);
 
@@ -143,37 +148,46 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 	}
 
 	private void consultarProdutos() {
-		produtos = new ArrayList<Produto>();
 		try {
-			produtos = new ProdutoController().readByName(textFieldNomeProduto.getText().toString().trim());
+			estoque = new ProdutoController().readByName(textFieldNomeProduto.getText().toString().trim());
+			montarListaProdutos();
 		} catch (ControleEstoqueSqlException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void listarTodosProdutos() {
-		produtos = new ArrayList<Produto>();
 		try {
-			produtos = new ProdutoController().listarTodos();
+
+			estoque = new ProdutoController().listarTodos();
+			montarListaProdutos();
 		} catch (ControleEstoqueSqlException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void montarTable() {
+		List<ItemEstoque> itens = new ArrayList<ItemEstoque>();
+		Set<ItemEstoque> chaves = estoque.getItens().keySet();
+		for (Iterator<ItemEstoque> iterator = chaves.iterator(); iterator.hasNext();) {
+			ItemEstoque chave = iterator.next();
+			if (chave != null)
+				itens.add(chave);
+		}
+		
 		/* Captura o modelo da tabela */
 		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		modelo.setNumRows(0);
 		/* Copia os dados da consulta para a tabela */
-		for (Produto prod : produtos) {
-			modelo.addRow(new Object[] { prod.getCodProduto(), prod.getNome(), prod.getValorUnitario(),
-					prod.getQuantideAtual() });
+		for (int i = 0 ; i < produtos.size();  i++ ) {
+			modelo.addRow(new Object[] { produtos.get(i).getCodProduto(), produtos.get(i).getNome(), produtos.get(i).getValorUnitario(),  itens.get(i).getQuantideProduto()});
 		}
 	}
 
 	private int coluna = -1;
 	private int linha = -1;
-
+	private int quantidadeAtual = 0;
+	
 	private void getClickColunaTabela() {
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -192,6 +206,7 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 			for (Produto produto : produtos) {
 				if (Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()) {
 					produtoEditar = produto;
+					quantidadeAtual = Integer.parseInt(table.getModel().getValueAt(linha, 3).toString());
 				}
 			}
 			if (produtoEditar != null) {
@@ -221,9 +236,10 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		}
 	}
 
+	
 	private void getEditarCadastroProduto(Produto produto) {
 
-		EditarCadastroProdutoDialog editarCadastro = new EditarCadastroProdutoDialog(frame, produto);
+		EditarCadastroProdutoDialog editarCadastro = new EditarCadastroProdutoDialog(frame, produto,quantidadeAtual);
 		editarCadastro.setBounds(100, 100, 400, 300);
 		editarCadastro.setTitle("Editar dados do cadastro");
 		editarCadastro.setLocationRelativeTo(null);
@@ -238,7 +254,18 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 			System.out.println("Deletou");
 			if (new ProdutoController().delete(produtoDeletar) == 1) {
 				new Mensagens(Util.DELETE_PRD_SUCESS);
+				listarTodosProdutos();
 			}
+		}
+	}
+
+	private void montarListaProdutos() {
+		produtos = new ArrayList<Produto>();
+		Set<ItemEstoque> chaves = estoque.getItens().keySet();
+		for (Iterator<ItemEstoque> iterator = chaves.iterator(); iterator.hasNext();) {
+			ItemEstoque chave = iterator.next();
+			if (chave != null)
+				produtos.add(estoque.getItens().get(chave));
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package br.edu.ifpb.controllers;
 
+import java.util.List;
+
 import br.edu.ifpb.dao.FornecedorDAO;
 import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
@@ -16,5 +18,9 @@ public class FornecedorController {
 	
 	public int update(Fornecedor funcionario) throws ControleEstoqueSqlException {		
 		return FornecedorDAO.getInstance().update(funcionario);
+	}
+	
+	public List<Fornecedor> listarTodos() throws ControleEstoqueSqlException{
+		return FornecedorDAO.getInstance().listarTodos();
 	}
 }

@@ -3,6 +3,7 @@ package br.edu.ifpb.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -12,11 +13,12 @@ import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
 
-public class FuncionarioDAO {
+public class FuncionarioDAO implements DAOInterface<Funcionario> {
 
 	private final String INSERT = "INSERT INTO FUNCIONARIO (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO) VALUES (?,?,?,?,?,?,?,?,?)";
 	private final String LISTBYLOGIN = "SELECT ID, NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO FROM FUNCIONARIO WHERE LOGIN=? AND SENHA=?";
 	private final String UPDATE = "UPDATE FUNCIONARIO SET NOME=?, CPF=?, ENDERECO=?, DATANASCIMENTO=?, TELEFONE=?, EMAIL=?, LOGIN=?, SENHA=?, IDDEPARTAMENTO=? WHERE ID=?";
+	private final String LISTBYID = "SELECT * FROM FORNECEDOR WHERE id=?";
 
 	/*
 	 * private final String UPDATE =
@@ -37,9 +39,9 @@ public class FuncionarioDAO {
 	// a conexão com o banco de dados
 	public Connection connection;
 
-	public FuncionarioDAO() {
-	}
+	public FuncionarioDAO(){}
 
+	@Override
 	public int creat(Funcionario pessoa) throws ControleEstoqueSqlException {
 
 		int chave = 0;
@@ -121,6 +123,7 @@ public class FuncionarioDAO {
 		return funcioarioConsulta;
 	}
 
+	@Override
 	public int update(Funcionario funci) throws ControleEstoqueSqlException {
 
 		connection = null;
@@ -150,5 +153,55 @@ public class FuncionarioDAO {
 		}
 		
 		return chave;
+	}
+	
+
+	public Funcionario consultaByID(int id) throws ControleEstoqueSqlException {
+
+		Funcionario funcionarioConsulta = null;
+		connection = null;
+
+			try {
+
+				connection = (Connection) new ConnectionFactory().getConnection();
+
+				// prepared statement para consulta do login no banco
+				PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(LISTBYID);
+				pstm.setInt(1,id);
+
+
+				ResultSet rs = pstm.executeQuery();
+				if (rs.next()) {
+
+					funcionarioConsulta = new Funcionario();
+					funcionarioConsulta.setCodPessoa(rs.getInt("id"));
+					funcionarioConsulta.setLogin(rs.getString("login"));
+					funcionarioConsulta.setNome(rs.getString("nome"));
+					funcionarioConsulta.setEmail(rs.getString("email"));
+					funcionarioConsulta.setTelefone(rs.getString("telefone"));
+					funcionarioConsulta.setCpf(rs.getString("cpf"));
+					funcionarioConsulta.setEndereco(rs.getString("endereco"));
+					funcionarioConsulta.setDataNascimento(rs.getString("dataNascimento"));
+					funcionarioConsulta.setSenha(rs.getString("senha"));
+				}
+
+				pstm.close();
+				rs.close();
+				connection.close();
+			} catch (SQLException sqle) {
+				throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+			}
+		return funcionarioConsulta;
+	}
+	
+
+	@Override
+	public List<Funcionario> listarTodos() throws ControleEstoqueSqlException {
+		return null;
+	}
+
+	@Override
+	public int delete(Funcionario t) throws ControleEstoqueSqlException {
+		return 0;
 	}
 }

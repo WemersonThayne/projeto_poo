@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs;
+package br.edu.ifpb.views.dialogs.produto;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -20,8 +20,10 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.controllers.CategoriaController;
+import br.edu.ifpb.controllers.FornecedorController;
 import br.edu.ifpb.controllers.ProdutoController;
 import br.edu.ifpb.entidades.CategoriaProduto;
+import br.edu.ifpb.entidades.Fornecedor;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
@@ -38,8 +40,11 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	private JTextField textFieldQuantidadeProduto;
 
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
+	private JComboBox<Fornecedor> comboBoxForncedor;
 
-	List<CategoriaProduto> categorias = null;
+
+	private List<CategoriaProduto> categorias = null;
+	private List<Fornecedor> fornecedores = null;
 
 	/**
 	 * Create the application.
@@ -53,18 +58,40 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		getContentPane().setLayout(new FormLayout(
-				new ColumnSpec[] { FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("113px"),
-						ColumnSpec.decode("199px:grow"), FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
-						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
-						FormSpecs.DEFAULT_COLSPEC, },
-				new RowSpec[] { FormSpecs.LINE_GAP_ROWSPEC, RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
-						FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("max(66dlu;default)"),
-						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
-						RowSpec.decode("default:grow"), }));
+		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("113px"),
+				ColumnSpec.decode("199px:grow"),
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC,},
+			new RowSpec[] {
+				FormSpecs.LINE_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("14px"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("max(66dlu;default)"),
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("default:grow"),}));
 
 		JLabel lblCadastroProdutos = new JLabel("Cadastro Produtos");
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
@@ -92,15 +119,21 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 		textFieldQuantidadeProduto = new JTextField();
 		getContentPane().add(textFieldQuantidadeProduto, "4, 10, left, default");
 		textFieldQuantidadeProduto.setColumns(10);
+		
+				JLabel lblCategoria = new JLabel("Categoria:");
+				getContentPane().add(lblCategoria, "3, 12, left, default");
+		
+				comboBoxCategoria = new JComboBox<CategoriaProduto>();
+				getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
+		
+		JLabel lblFornecedor = new JLabel("Fornecedor:");
+		getContentPane().add(lblFornecedor, "3, 14, left, default");
 
-		JLabel lblCategoria = new JLabel("Categoria:");
-		getContentPane().add(lblCategoria, "3, 12, left, default");
-
-		comboBoxCategoria = new JComboBox<CategoriaProduto>();
-		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
-
+		comboBoxForncedor = new JComboBox<Fornecedor>();
+		getContentPane().add(comboBoxForncedor, "4, 14, fill, default");
+			
 		JButton btnNewButtonSalvar = new JButton("Salvar");
-		getContentPane().add(btnNewButtonSalvar, "4, 14, center, default");
+		getContentPane().add(btnNewButtonSalvar, "4, 16, center, center");
 
 		btnNewButtonSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,9 +147,10 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 				limparCampos();
 			}
 		});
-		getContentPane().add(btnNewButtonLimpar, "6, 14, center, default");
+		getContentPane().add(btnNewButtonLimpar, "6, 16, center, default");
 
 		montarCategoria();
+		montarFornecedores();
 	}
 
 	/* Preenche o combo com os departamentos */
@@ -159,18 +193,35 @@ public class CadastroProdutoDialog extends javax.swing.JDialog {
 	private void montaObjeto() {
 		if(validarAll()){
 			CategoriaProduto cat = (CategoriaProduto) comboBoxCategoria.getSelectedItem();
+			Fornecedor f = (Fornecedor) comboBoxForncedor.getSelectedItem();
 			
 			Produto produto = new Produto();
 			produto.setCategoria(cat);
+			produto.setFornecedor(f);
 			produto.setNome(textFieldNomeProduto.getText().toString());
-			produto.setQuantideAtual(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
 			try {
-				new ProdutoController().creat(produto);
+				new ProdutoController().creat(produto,Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			} catch (ControleEstoqueSqlException e) {
 				e.printStackTrace();
 			}
 		}
-		
 	}
+	
+	/* Preenche o combo com os fornecedores cadastrados */
+	private void montarFornecedores() {
+		fornecedores = new ArrayList<Fornecedor>();
+
+		try {
+			fornecedores = new FornecedorController().listarTodos();
+		} catch (ControleEstoqueSqlException e1) {
+			e1.printStackTrace();
+		}
+
+		for (Fornecedor fornecedor : fornecedores) {
+			comboBoxForncedor.addItem(fornecedor);
+		}
+
+	}
+	
 }

@@ -12,7 +12,7 @@ import br.edu.ifpb.entidades.CategoriaProduto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
 
-public class CategoriaDAO {
+public class CategoriaDAO implements DAOInterface<CategoriaProduto> {
 	private final String SELECTALL = "SELECT * FROM CATEGORIA";
 
 	private static CategoriaDAO instance;
@@ -30,8 +30,21 @@ public class CategoriaDAO {
 	public CategoriaDAO() {
 	}
 
-	public List<CategoriaProduto> selectAll() throws ControleEstoqueSqlException {
+	
 
+	@Override
+	public int creat(CategoriaProduto t) throws ControleEstoqueSqlException {
+		return 0;
+	}
+
+	@Override
+	public int update(CategoriaProduto t) throws ControleEstoqueSqlException {
+		return 0;
+	}
+
+	@Override
+	public List<CategoriaProduto> listarTodos() throws ControleEstoqueSqlException {
+		
 		List<CategoriaProduto> categorias = null;
 		connection = null;
 
@@ -62,5 +75,10 @@ public class CategoriaDAO {
 		}
 
 		return categorias;
+	}
+
+	@Override
+	public int delete(CategoriaProduto t) throws ControleEstoqueSqlException {
+		return 0;
 	}
 }

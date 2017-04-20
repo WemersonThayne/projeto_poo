@@ -2,11 +2,9 @@ package br.edu.ifpb.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 
@@ -14,7 +12,7 @@ import br.edu.ifpb.entidades.Departamento;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
 
-public class DepartamentoDAO {
+public class DepartamentoDAO implements DAOInterface<Departamento> {
 
 	private final String SELECTALL = "SELECT * FROM DEPARTAMENTO";
 
@@ -33,8 +31,19 @@ public class DepartamentoDAO {
 	public DepartamentoDAO() {
 	}
 
-	public List<Departamento> selectAll() throws ControleEstoqueSqlException {
 
+	@Override
+	public int creat(Departamento t) throws ControleEstoqueSqlException {
+		return 0;
+	}
+
+	@Override
+	public int update(Departamento t) throws ControleEstoqueSqlException {
+		return 0;
+	}
+
+	@Override
+	public List<Departamento> listarTodos() throws ControleEstoqueSqlException {
 		List<Departamento> departamentos = null;
 		connection = null;
 
@@ -65,6 +74,11 @@ public class DepartamentoDAO {
 		}
 
 		return departamentos;
+	}
+
+	@Override
+	public int delete(Departamento t) throws ControleEstoqueSqlException {
+		return 0;
 	}
 
 }

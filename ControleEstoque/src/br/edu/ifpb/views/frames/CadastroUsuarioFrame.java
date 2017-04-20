@@ -388,7 +388,7 @@ public class CadastroUsuarioFrame  {
 	private void montaObjeto(){
 		
 		int tipoPessoa = comboBoxTipoUsuario.getSelectedIndex();
-			
+			System.out.println("Tipo Pessoa:"+tipoPessoa);
 			if(tipoPessoa == 1){
 				try {
 					new FuncionarioController().creat(montaFuncionario());
@@ -437,6 +437,7 @@ public class CadastroUsuarioFrame  {
 		fornecedor.setTelefone(textFieldTelefone.getText().toString());
 		fornecedor.setNomeLoja(textFieldNomeLoja.getText().toString());
 		
+		System.out.println("fornecedor:"+fornecedor.toString());
 		return fornecedor;
 	}
 
@@ -458,14 +459,18 @@ public class CadastroUsuarioFrame  {
 		      };
 		      for (int i = 0; i <= 3000; i++) {
 		    	  if(i == 3000){
-		    		  if(!validarAll()){
+		    		  montaObjeto();
+	    			  frmCadastroDeUsurio.dispose();
+		              new Mensagens("Cadastro Efetuado com Sucesso...");
+		              LoginFrame.main(null); 
+		    		  /*if(!validarAll()){
 		    			  montaObjeto();
 		    			  frmCadastroDeUsurio.dispose();
 			              new Mensagens("Cadastro Efetuado com Sucesso...");
 			              LoginFrame.main(null); 
 		    		  }else{
 		    			  progressBar.setVisible(false);
-		    		  }
+		    		  }*/
 		    	  }
 		    	  
 		        // Atualiza a Barra de Progresso

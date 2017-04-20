@@ -9,6 +9,6 @@ import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 public class CategoriaController {
 
 	public List<CategoriaProduto> listarTodos() throws ControleEstoqueSqlException {
-		return CategoriaDAO.getInstance().selectAll();
+		return CategoriaDAO.getInstance().listarTodos();
 	}
 }

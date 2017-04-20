@@ -10,7 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import br.edu.ifpb.views.dialogs.ConsultaPedidoDialog;
+import br.edu.ifpb.views.dialogs.pedido.ConsultaPedidoDialog;
 
 public class FornecedorFrame {
 

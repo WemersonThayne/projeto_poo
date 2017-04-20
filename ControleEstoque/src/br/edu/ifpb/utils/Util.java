@@ -18,6 +18,8 @@ public  class  Util {
 	public static String 	CADASTRO_PRD_SUCESS = "Cadastro do Produto efetuado com Sucesso.";
 	public static String 	UPDATE_PRD_SUCESS = "Dados do Produto atualizado com Sucesso.";
 	public static String 	DELETE_PRD_SUCESS = "Produto Excluido com Sucesso.";
+	public static String 	CADASTRO_PED_SUCESS = "Cadastro do Pedido efetuado com Sucesso.";
+	
 	public static boolean validarCampos(JTextField campo){
 		if(campo.getText().length() == 0){
 			return false;

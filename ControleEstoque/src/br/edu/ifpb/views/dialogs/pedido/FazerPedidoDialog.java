@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs;
+package br.edu.ifpb.views.dialogs.pedido;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -143,6 +143,12 @@ public class FazerPedidoDialog extends JDialog {
 		btnFinalizarPedido = new JButton("Finalizar Pedido");
 		getContentPane().add(btnFinalizarPedido, "3, 24, center, default");
 
+		btnFinalizarPedido.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				finalizarPedido(produtosPedido);
+			}
+		});
+		
 		btnAdicinarProduto = new JButton("Adicinar Produto na Lista");
 		btnAdicinarProduto.setEnabled(false);
 		getContentPane().add(btnAdicinarProduto, "4, 24, center, default");
@@ -266,5 +272,14 @@ public class FazerPedidoDialog extends JDialog {
 		visualizarLista.setLocationRelativeTo(null);
 		visualizarLista.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		visualizarLista.setVisible(true);
+	}
+	
+	private  void finalizarPedido (List<Produto> produtos){
+		FinalizarPedidoDialog finalizarPedidoDialog = new FinalizarPedidoDialog(frame, produtos);
+		finalizarPedidoDialog.setBounds(100, 100, 600, 500);
+		finalizarPedidoDialog.setTitle("Finalizar Pedido");
+		finalizarPedidoDialog.setLocationRelativeTo(null);
+		finalizarPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		finalizarPedidoDialog.setVisible(true);
 	}
 }
