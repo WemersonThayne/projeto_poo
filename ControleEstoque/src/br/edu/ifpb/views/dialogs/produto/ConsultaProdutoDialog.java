@@ -102,7 +102,7 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		getContentPane().add(btnNewButtonListarTodos, "4, 8, fill, default");
 		btnNewButtonListarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listarTodosProdutos();
+				listarEstoque();
 				montarTable();
 			}
 		});
@@ -156,9 +156,8 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 		}
 	}
 
-	private void listarTodosProdutos() {
+	private void listarEstoque() {
 		try {
-
 			estoque = new ProdutoController().listarTodos();
 			montarListaProdutos();
 		} catch (ControleEstoqueSqlException e) {
@@ -212,7 +211,7 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 			if (produtoEditar != null) {
 				getEditarCadastroProduto(produtoEditar);
 			} else {
-				new Mensagens("Não foi possivel carregar as informações do produto.");
+				new Mensagens(Util.ERRO_AO_BUSCAR_PRODUTO);
 			}
 
 		} else {
@@ -230,7 +229,7 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 						e.printStackTrace();
 					}
 				} else {
-					new Mensagens("Não foi possivel carregar as informações do produto.");
+					new Mensagens(Util.ERRO_AO_BUSCAR_PRODUTO);
 				}
 			}
 		}
@@ -254,7 +253,8 @@ public class ConsultaProdutoDialog extends javax.swing.JDialog {
 			System.out.println("Deletou");
 			if (new ProdutoController().delete(produtoDeletar) == 1) {
 				new Mensagens(Util.DELETE_PRD_SUCESS);
-				listarTodosProdutos();
+				listarEstoque();
+				montarTable();
 			}
 		}
 	}

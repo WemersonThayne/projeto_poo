@@ -16,9 +16,10 @@ import br.edu.ifpb.utils.Util;
 
 public class PedidoDAO implements DAOInterface<Pedido> {
 
-	private final String INSERT    = "INSERT INTO PEDIDO (DATAPEDIDOR) VALUES (?)";
-	private final String LIST      = "SELECT * FROM PEDIDO ORDER BY CODPEDIDO";
-	private final String LISTBYID  = "SELECT * FROM PEDIDO WHERE codPedido=?";
+	private final String INSERT     = "INSERT INTO PEDIDO (DATAPEDIDO,HASHPEDIDO) VALUES (?,?)";
+	private final String LIST       = "SELECT * FROM PEDIDO ORDER BY CODPEDIDO";
+	private final String LISTBYID   = "SELECT * FROM PEDIDO WHERE codPedido=?";
+	private final String LISTBYHASHPEDIDO = "SELECT * FROM PEDIDO WHERE HASHPEDIDO=?";
 	
 	private static PedidoDAO instance;
 
@@ -32,8 +33,7 @@ public class PedidoDAO implements DAOInterface<Pedido> {
 	// a conexão com o banco de dados
 	public Connection connection;
 
-	public PedidoDAO() {
-	}
+	public PedidoDAO(){}
 
 	@Override
 	public int creat(Pedido pedido) throws ControleEstoqueSqlException {
@@ -51,7 +51,7 @@ public class PedidoDAO implements DAOInterface<Pedido> {
 				PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(INSERT);
 			
 				pstm.setDate(1, pedido.getDataPedido());
-
+				pstm.setString(2, pedido.getHashPedido());
 				pstm.execute();
 
 				chave = Statement.RETURN_GENERATED_KEYS;
@@ -116,6 +116,34 @@ public class PedidoDAO implements DAOInterface<Pedido> {
 			if (rs.next()) {
 				pedido.setCodPedido(rs.getInt("codPedido"));
 				pedido.setDataPedido(rs.getDate("dataPedido"));
+				pedido.setHashPedido(rs.getString("hashPedido"));
+			}
+
+			stmt.close();
+			rs.close();
+			connection.close();
+
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+
+		return pedido;
+	}
+	
+	public Pedido consultaByHash(String hash)  throws ControleEstoqueSqlException{
+		Pedido pedido = new Pedido();
+		try {
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(LISTBYHASHPEDIDO);
+			stmt.setString(1, hash);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				pedido.setCodPedido(rs.getInt("codPedido"));
+				pedido.setDataPedido(rs.getDate("dataPedido"));
+				pedido.setHashPedido(rs.getString("hashPedido"));
 			}
 
 			stmt.close();

@@ -12,19 +12,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
-import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 import br.edu.ifpb.views.dialogs.pedido.ConsultaPedidoDialog;
 import br.edu.ifpb.views.dialogs.pedido.FazerPedidoDialog;
 import br.edu.ifpb.views.dialogs.produto.CadastroProdutoDialog;
 import br.edu.ifpb.views.dialogs.produto.ConsultaProdutoDialog;
-
-import com.jgoodies.forms.layout.FormSpecs;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
 
 public class FuncionarioFrame{
 

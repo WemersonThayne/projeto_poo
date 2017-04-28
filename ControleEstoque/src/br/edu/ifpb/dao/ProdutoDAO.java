@@ -22,7 +22,7 @@ public class ProdutoDAO implements DAOInterface<Produto> {
 
 	private final String INSERT = "INSERT INTO PRODUTO (NOME,VALORUNITARIO , CODCATEGORIA,CODFORNECEDOR) VALUES (?,?,?,?)";
 	private final String LIST = "SELECT P.CODPRODUTO, P.NOME, P.VALORUNITARIO, P.CODCATEGORIA, P.CODFORNECEDOR,"
-			+ "E.QUANTIDADEPRODUTO, E.IDESTOQUE  FROM PRODUTO P INNER JOIN ESTOQUE E ON P.CODPRODUTO = E.IDPRODUTOESTOQUE ORDER BY P.NOME";
+			+ "E.QUANTIDADEPRODUTO, E.IDESTOQUE  FROM PRODUTO P INNER JOIN ESTOQUE E ON P.CODPRODUTO = E.IDPRODUTOESTOQUE ORDER BY P.NOME ASC";
 	private final String LISTBYID = "SELECT * FROM PRODUTO WHERE codProduto=?";
 	private final String LISTBYNAME = "SELECT * FROM PRODUTO WHERE nome=?";
 	private final String READBYNAME = "SELECT P.CODPRODUTO, P.NOME, P.VALORUNITARIO, P.CODCATEGORIA, P.CODFORNECEDOR,"
@@ -105,7 +105,8 @@ public class ProdutoDAO implements DAOInterface<Produto> {
 				Fornecedor f = new Fornecedor();
 				ItemEstoque i = new ItemEstoque();
 				i.setQuantideProduto(rs.getInt("quantidadeproduto"));
-			
+				i.setIdEstoque(rs.getInt("idEstoque"));
+				
 				produto.setCodProduto(rs.getInt("codProduto"));
 				produto.setNome(rs.getString("nome"));
 				produto.setValorUnitario(rs.getDouble("valorUnitario"));
@@ -150,7 +151,8 @@ public class ProdutoDAO implements DAOInterface<Produto> {
 				Fornecedor f = new Fornecedor();
 				ItemEstoque i = new ItemEstoque();
 				i.setQuantideProduto(rs.getInt("quantidadeproduto"));
-			
+				i.setIdEstoque(rs.getInt("idEstoque"));
+
 				produto.setCodProduto(rs.getInt("codProduto"));
 				produto.setNome(rs.getString("nome"));
 				produto.setValorUnitario(rs.getDouble("valorUnitario"));

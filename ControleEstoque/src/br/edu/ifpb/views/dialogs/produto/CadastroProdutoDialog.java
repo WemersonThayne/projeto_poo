@@ -1,3 +1,4 @@
+
 package br.edu.ifpb.views.dialogs.produto;
 
 import java.awt.Color;

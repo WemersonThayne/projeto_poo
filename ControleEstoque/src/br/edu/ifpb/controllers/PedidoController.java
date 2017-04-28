@@ -16,4 +16,7 @@ public class PedidoController {
 		return PedidoDAO.getInstance().listarTodos();
 	}
 	
+	public Pedido consultarByHash(String hash) throws ControleEstoqueSqlException {		
+		return PedidoDAO.getInstance().consultaByHash(hash);
+	}
 }

@@ -17,7 +17,7 @@ public class ItemEstoqueDAO implements DAOInterface<ItemEstoque> {
 
 	private final String INSERT = "INSERT INTO ESTOQUE (QUANTIDADEPRODUTO,IDPRODUTOESTOQUE) VALUES (?,?)";
 	private final String UPDATE = "UPDATE ESTOQUE SET QUANTIDADEPRODUTO=? WHERE IDPRODUTOESTOQUE=?";
-	private final String DELETE = "DELETE FROM ESTOQUIE WHERE IDPRODUTOESTOQUE =?";
+	private final String DELETE = "DELETE FROM ESTOQUE WHERE IDPRODUTOESTOQUE =?";
 
 	private static ItemEstoqueDAO instance;
 

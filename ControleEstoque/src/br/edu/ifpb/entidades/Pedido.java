@@ -6,6 +6,8 @@ public class Pedido {
 
 	private int codPedido;
 	private Date dataPedido;
+	private String hashPedido;
+	
 	public Pedido(){}
 	public int getCodPedido() {
 		return codPedido;
@@ -19,10 +21,16 @@ public class Pedido {
 	public void setDataPedido(Date dataPedido) {
 		this.dataPedido = dataPedido;
 	}
+	public String getHashPedido() {
+		return hashPedido;
+	}
+	public void setHashPedido(String hashPedido) {
+		this.hashPedido = hashPedido;
+	}
 	
 	@Override
 	public String toString() {
-		return "Pedido [codPedido=" + codPedido + ", dataPedido=" + dataPedido + "]";
-	}	
+		return "Pedido [codPedido=" + codPedido + ", dataPedido=" + dataPedido + ", hashPedido=" + hashPedido + "]";
+	}
 	
 }

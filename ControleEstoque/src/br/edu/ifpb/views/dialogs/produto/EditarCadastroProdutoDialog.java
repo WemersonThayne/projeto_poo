@@ -42,19 +42,19 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 	private JComboBox<CategoriaProduto> comboBoxCategoria;
 	private JComboBox<Fornecedor> comboBoxForncedor;
 
-
 	private List<CategoriaProduto> categorias = null;
 	private List<Fornecedor> fornecedores = null;
 	private int quantidaAtual = 0;
 	private Produto produto = null;
-
+	private JFrame frame;
 	/**
 	 * Create the application.
 	 */
-	public EditarCadastroProdutoDialog(JFrame frame, Produto produto,int quantidadeAtual) {
+	public EditarCadastroProdutoDialog(JFrame frame, Produto produto, int quantidadeAtual) {
 		super(frame, true);
 		this.produto = produto;
 		this.quantidaAtual = quantidadeAtual;
+		this.frame = frame;
 		initialize();
 	}
 
@@ -62,40 +62,19 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("113px"),
-				ColumnSpec.decode("199px:grow"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,},
-			new RowSpec[] {
-				FormSpecs.LINE_GAP_ROWSPEC,
-				RowSpec.decode("14px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("14px"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("max(66dlu;default)"),
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("default:grow"),}));
+		getContentPane().setLayout(new FormLayout(
+				new ColumnSpec[] { FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("113px"),
+						ColumnSpec.decode("199px:grow"), FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+						FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
+						FormSpecs.DEFAULT_COLSPEC, },
+				new RowSpec[] { FormSpecs.LINE_GAP_ROWSPEC, RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("14px"), FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
+						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("max(66dlu;default)"),
+						FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
+						RowSpec.decode("default:grow"), }));
 
 		JLabel lblCadastroProdutos = new JLabel("Editar Produtos");
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
@@ -123,19 +102,19 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		textFieldQuantidadeProduto = new JTextField();
 		getContentPane().add(textFieldQuantidadeProduto, "4, 10, left, default");
 		textFieldQuantidadeProduto.setColumns(10);
-		
+
 		JLabel lblCategoria = new JLabel("Categoria:");
 		getContentPane().add(lblCategoria, "3, 12, left, default");
 
 		comboBoxCategoria = new JComboBox<CategoriaProduto>();
 		getContentPane().add(comboBoxCategoria, "4, 12, fill, default");
-		
+
 		JLabel lblFornecedor = new JLabel("Fornecedor:");
 		getContentPane().add(lblFornecedor, "3, 14, left, default");
-		
+
 		comboBoxForncedor = new JComboBox<Fornecedor>();
 		getContentPane().add(comboBoxForncedor, "4, 14, 2, 1, fill, default");
-				
+
 		JButton btnNewButtonSalvar = new JButton("Salvar");
 		getContentPane().add(btnNewButtonSalvar, "4, 16, fill, default");
 
@@ -144,7 +123,7 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 				montaObjeto();
 			}
 		});
-		
+
 		montarCategoria();
 		montarFornecedores();
 		preencherValoresNaTela();
@@ -180,7 +159,7 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		}
 
 	}
-	
+
 	/* Valida todos os campos */
 	private boolean validarAll() {
 		if (Util.validarCampos(textFieldNomeProduto) && Util.validarCampos(textFieldQuantidadeProduto)
@@ -194,32 +173,36 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 
 	/* Monta o objeto para salvar no banco */
 	private void montaObjeto() {
-		if(validarAll()){
-			
+		if (validarAll()) {
+
 			CategoriaProduto cat = (CategoriaProduto) comboBoxCategoria.getSelectedItem();
 			Fornecedor f = (Fornecedor) comboBoxForncedor.getSelectedItem();
 
 			produto.setCategoria(cat);
 			produto.setFornecedor(f);
 			produto.setNome(textFieldNomeProduto.getText().toString());
-			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
-		
+			produto.setValorUnitario(
+					Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
+
 			try {
-				if(new ProdutoController().update(produto,Integer.parseInt(textFieldQuantidadeProduto.getText().toString())) == 1){
+				if (new ProdutoController().update(produto,
+						Integer.parseInt(textFieldQuantidadeProduto.getText().toString())) == 1) {
 					new Mensagens(Util.UPDATE_PRD_SUCESS);
 					dispose();
-				}	
+				}
 			} catch (ControleEstoqueSqlException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void preencherValoresNaTela(){
+	private void preencherValoresNaTela() {
 		textFieldNomeProduto.setText(produto.getNome());
 		textFieldQuantidadeProduto.setText(String.valueOf(quantidaAtual));
 		textFieldValorUnitario.setText(String.valueOf(produto.getValorUnitario()).replaceAll(".", ","));
-		comboBoxCategoria.setSelectedIndex(produto.getCategoria().getCodCategoria()-1);
+		comboBoxCategoria.setSelectedIndex(produto.getCategoria().getCodCategoria() - 1);
 	}
-	
+
+
+
 }

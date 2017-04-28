@@ -19,7 +19,7 @@ import br.edu.ifpb.utils.Util;
 public class PedidoProdutoDAO implements DAOInterface<PedidoProduto> {
 
 	private final String INSERT = "INSERT INTO PEDIDO_PRODUTO (idPedido,idProduto) VALUES (?,?)";
-	private final String LIST   = "SELECT * FROM PEDIDO_PRODUTO ORDER BY idPedido";
+	private final String LIST   = "SELECT * FROM PEDIDO_PRODUTO GROUP BY idPedido";
 	private final String LISTIDPEDIDOS   = "SELECT idProduto FROM PEDIDO_PRODUTO WHERE idPedido=?";
 	
 	private static PedidoProdutoDAO instance;
@@ -51,19 +51,18 @@ public class PedidoProdutoDAO implements DAOInterface<PedidoProduto> {
 				connection = (Connection) new ConnectionFactory().getConnection();
 
 				PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(INSERT);
-			
+				
 				for (Produto p : pedido.getProdutos()) {
 					pstm.setInt(1, pedido.getPedido().getCodPedido());
 					pstm.setInt(2, p.getCodProduto() );
 					pstm.execute();	
 				}
 
+				new Mensagens(Util.CADASTRO_PED_SUCESS);
 				chave = Statement.RETURN_GENERATED_KEYS;
 				pstm.close();
 				connection.close();
-
 				
-				new Mensagens(Util.CADASTRO_PED_SUCESS);
 			} catch (SQLException sqle) {
 				throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
 			}
@@ -100,20 +99,23 @@ public class PedidoProdutoDAO implements DAOInterface<PedidoProduto> {
 				PreparedStatement stmtProdutos = (PreparedStatement) connection.prepareStatement(LISTIDPEDIDOS);
 				stmtProdutos.setInt(1, pedido.getCodPedido());
 
-				ResultSet rsProdutos = stmt.executeQuery();
+				ResultSet rsProdutos = stmtProdutos.executeQuery();
 				
 				while (rsProdutos.next()){
 					Produto p = new Produto();
 					p = produtoDAO.consultaByID(rsProdutos.getInt("idProduto"));
 					produtos.add(p);
 				}
+				
 				pedidoProduto.setProdutos(produtos);
 				pedidoProduto.setQuantProdutos(produtos.size());
-				pedidoProduto.setValorTotal(getValorTotal(produtos));
+				pedidoProduto.setValorTotal(getValorTotal(produtos) * produtos.size());
 				
-//				pedidos.add(pedido);
+				stmtProdutos.close();
+				rsProdutos.close();
+				pedidosProdutos.add(pedidoProduto);
 			}
-
+			
 			stmt.close();
 			rs.close();
 			connection.close();
@@ -127,13 +129,11 @@ public class PedidoProdutoDAO implements DAOInterface<PedidoProduto> {
 
 	@Override
 	public int update(PedidoProduto t) throws ControleEstoqueSqlException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public int delete(PedidoProduto t) throws ControleEstoqueSqlException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
@@ -144,6 +144,5 @@ public class PedidoProdutoDAO implements DAOInterface<PedidoProduto> {
 		}
 		return soma;
 	}
-	
 
 }

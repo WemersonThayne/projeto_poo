@@ -5,8 +5,17 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,16 +35,20 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.ItemEstoqueController;
+import br.edu.ifpb.controllers.PedidoController;
+import br.edu.ifpb.controllers.PedidoProdutoController;
 import br.edu.ifpb.controllers.ProdutoController;
+import br.edu.ifpb.entidades.Estoque;
+import br.edu.ifpb.entidades.ItemEstoque;
+import br.edu.ifpb.entidades.Pedido;
+import br.edu.ifpb.entidades.PedidoProduto;
 import br.edu.ifpb.entidades.Produto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
 
 public class FazerPedidoDialog extends JDialog {
 
-	/**
-	 * cadastro
-	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
 	private JFrame frame;
@@ -50,6 +63,10 @@ public class FazerPedidoDialog extends JDialog {
 
 	private List<Produto> produtos = new ArrayList<Produto>();
 	private List<Produto> produtosPedido = new ArrayList<Produto>();
+	private Estoque estoque;
+	private Set<ItemEstoque> chaves = new HashSet<ItemEstoque>();
+	private List<ItemEstoque> itens = new ArrayList<ItemEstoque>();
+	private List<ItemEstoque> itensPedido = new ArrayList<ItemEstoque>();
 
 	/**
 	 * Create the application.
@@ -142,13 +159,14 @@ public class FazerPedidoDialog extends JDialog {
 
 		btnFinalizarPedido = new JButton("Finalizar Pedido");
 		getContentPane().add(btnFinalizarPedido, "3, 24, center, default");
+		btnFinalizarPedido.setEnabled(false);
 
 		btnFinalizarPedido.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				finalizarPedido(produtosPedido);
+				finalizarPedido();
 			}
 		});
-		
+
 		btnAdicinarProduto = new JButton("Adicinar Produto na Lista");
 		btnAdicinarProduto.setEnabled(false);
 		getContentPane().add(btnAdicinarProduto, "4, 24, center, default");
@@ -158,7 +176,7 @@ public class FazerPedidoDialog extends JDialog {
 
 		btnVisualiarLista.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mostrarListaVisualizacao(produtosPedido);
+				mostrarListaVisualizacao(produtosPedido, itensPedido);
 			}
 		});
 		butaoAdiconarProduto();
@@ -185,7 +203,6 @@ public class FazerPedidoDialog extends JDialog {
 	}
 
 	private void criaJTable() {
-
 		table = new JTable();
 		table.setModel(new DefaultTableModel(new Object[][] {},
 				new String[] { "C\u00F3digo", "Nome ", "Valor Unit\u00E1rio", "Quantidade Atual" }));
@@ -194,26 +211,32 @@ public class FazerPedidoDialog extends JDialog {
 		table.getColumnModel().getColumn(0).setPreferredWidth(30);
 		table.getColumnModel().getColumn(1).setPreferredWidth(120);
 		table.getColumnModel().getColumn(2).setPreferredWidth(40);
-
 		table.setRowHeight(30);
-
 	}
 
 	private void montarProdutoPedido() {
 		if (linha != -1) {
 			btnAdicinarProduto.setEnabled(true);
+			btnFinalizarPedido.setEnabled(true);
 			textFieldNomeProdutoEscolhido.setText(table.getModel().getValueAt(linha, 1).toString());
 			textFieldValorUnitario.setText(table.getModel().getValueAt(linha, 2).toString());
 			textFieldQuantidadeProduto.setText(table.getModel().getValueAt(linha, 3).toString());
 		}
 	}
 
+	/*
+	 * Monta a lista dos produtos e itens para salvar e mostar na tela de
+	 * vizualizar lista
+	 */
 	private void montarListaPedido() {
 		Produto produtoPedido = new Produto();
+		ItemEstoque item = new ItemEstoque();
 
-		for (Produto produto : produtos) {
-			if (Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produto.getCodProduto()) {
-				produtoPedido = produto;
+		for (int i = 0; i < produtos.size(); i++) {
+			if (Integer.parseInt(table.getModel().getValueAt(linha, 0).toString()) == produtos.get(i).getCodProduto()) {
+				produtoPedido = produtos.get(i);
+				item = itens.get(i);
+				item.setQuantideProduto(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			}
 		}
 
@@ -221,12 +244,14 @@ public class FazerPedidoDialog extends JDialog {
 			new Mensagens("Produto já adicionado na lista");
 		} else {
 			produtosPedido.add(produtoPedido);
+			itensPedido.add(item);
 		}
 
 		textFieldNomeProdutoEscolhido.setText("");
 		textFieldValorUnitario.setText("");
 		textFieldQuantidadeProduto.setText("");
 		produtoPedido = null;
+		item = null;
 
 	}
 
@@ -246,40 +271,111 @@ public class FazerPedidoDialog extends JDialog {
 	}
 
 	private void consultarProdutos() {
-		produtosPedido = new ArrayList<Produto>();
-		produtos = new ArrayList<Produto>();
 		try {
-			produtos = new ProdutoController().readByName(textFieldNomeProduto.getText().toString().trim());
+			estoque = new ProdutoController().readByName(textFieldNomeProduto.getText().toString().trim());
+			montarListaProdutos();
 		} catch (ControleEstoqueSqlException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void montarTable() {
+		itens = new ArrayList<ItemEstoque>();
+		chaves = estoque.getItens().keySet();
+		for (Iterator<ItemEstoque> iterator = chaves.iterator(); iterator.hasNext();) {
+			ItemEstoque chave = iterator.next();
+			if (chave != null)
+				itens.add(chave);
+		}
+
 		/* Captura o modelo da tabela */
 		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		modelo.setNumRows(0);
 		/* Copia os dados da consulta para a tabela */
-		for (Produto prod : produtos) {
-			modelo.addRow(new Object[] { prod.getCodProduto(), prod.getNome(), prod.getValorUnitario(),
-					prod.getQuantideAtual() });
+		for (int i = 0; i < produtos.size(); i++) {
+			modelo.addRow(new Object[] { produtos.get(i).getCodProduto(), produtos.get(i).getNome(),
+					produtos.get(i).getValorUnitario(), itens.get(i).getQuantideProduto() });
 		}
 	}
-	private void mostrarListaVisualizacao(List<Produto> produtos){
-		VisualizarListaProdutoPedidoDialog visualizarLista = new VisualizarListaProdutoPedidoDialog(frame, produtos);
+
+	private void mostrarListaVisualizacao(List<Produto> produtos, List<ItemEstoque> itens) {
+		VisualizarListaProdutoPedidoDialog visualizarLista = new VisualizarListaProdutoPedidoDialog(frame, produtos,
+				itens);
 		visualizarLista.setBounds(100, 100, 400, 300);
-		visualizarLista.setTitle("Lista de Produtos");
+		visualizarLista.setTitle("Resumo do Pedido");
 		visualizarLista.setLocationRelativeTo(null);
 		visualizarLista.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		visualizarLista.setVisible(true);
 	}
-	
-	private  void finalizarPedido (List<Produto> produtos){
-		FinalizarPedidoDialog finalizarPedidoDialog = new FinalizarPedidoDialog(frame, produtos);
-		finalizarPedidoDialog.setBounds(100, 100, 600, 500);
-		finalizarPedidoDialog.setTitle("Finalizar Pedido");
-		finalizarPedidoDialog.setLocationRelativeTo(null);
-		finalizarPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		finalizarPedidoDialog.setVisible(true);
+
+	private void finalizarPedido() {
+		Pedido pedido = new Pedido();
+		pedido.setDataPedido(Date.valueOf(LocalDate.now()));
+		try {
+			pedido.setHashPedido(makeSHA1Hash());
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		try {
+
+			for (int i = 0; i < itensPedido.size(); i++) {
+				itensPedido.get(i).setIdProduto(produtosPedido.get(i).getCodProduto());
+				if (itens.get(i).getIdEstoque() == itensPedido.get(i).getIdEstoque()) {
+					int quant = itensPedido.get(i).getQuantideProduto();
+					itensPedido.get(i).setQuantideProduto(quant + itens.get(i).getQuantideProduto());
+				}
+				new ItemEstoqueController().update(itensPedido.get(i));
+			}
+
+			new PedidoController().creat(pedido);
+			pedido = new PedidoController().consultarByHash(pedido.getHashPedido());
+
+			if (pedido != null) {
+
+				PedidoProduto pp = new PedidoProduto();
+				pp.setPedido(pedido);
+				pp.setProdutos(produtosPedido);
+				pp.setQuantProdutos(produtosPedido.size());
+				pp.setValorTotal(getValorTotal() * produtosPedido.size());
+
+				new PedidoProdutoController().creat(pp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void montarListaProdutos() {
+		produtos = new ArrayList<Produto>();
+		chaves = estoque.getItens().keySet();
+		for (Iterator<ItemEstoque> iterator = chaves.iterator(); iterator.hasNext();) {
+			ItemEstoque chave = iterator.next();
+			if (chave != null)
+				produtos.add(estoque.getItens().get(chave));
+		}
+	}
+
+	private Double getValorTotal() {
+		Double valorTotal = 0D;
+		for (Produto p : produtosPedido) {
+			valorTotal += p.getValorUnitario();
+		}
+		return valorTotal;
+	}
+
+	public String makeSHA1Hash() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance("SHA1");
+		md.reset();
+		byte[] buffer = String.valueOf(Calendar.getInstance().getTimeInMillis()).getBytes("UTF-8");
+		md.update(buffer);
+		byte[] digest = md.digest();
+
+		String hexStr = "";
+		for (int i = 0; i < digest.length; i++) {
+			hexStr += Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return hexStr;
 	}
 }
