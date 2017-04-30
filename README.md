@@ -6,7 +6,7 @@ Requisitos para executar o projeto:
 
 1° Instalar Eclipse Neon.
 
-2° Maven configurado para baixar o projeto.
+2° Maven configurado para baixar as depência do projeto.
 
 3° Instalar Mysql Community Server 5.7.
 (https://dev.mysql.com/downloads/mysql/)
