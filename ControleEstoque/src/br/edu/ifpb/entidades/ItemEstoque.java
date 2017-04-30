@@ -1,6 +1,6 @@
 package br.edu.ifpb.entidades;
 
-public class ItemEstoque {
+public class ItemEstoque  implements Cloneable{
 	
 	private int idEstoque;
 	private int quantideProduto;
@@ -29,4 +29,14 @@ public class ItemEstoque {
 				+ idProduto + "]";
 	}
 	
+	@Override
+	public ItemEstoque clone() throws CloneNotSupportedException{
+		ItemEstoque ie = (ItemEstoque) super.clone();
+		ie.setIdEstoque(idEstoque);
+		ie.setIdProduto(idProduto);
+		ie.setQuantideProduto(quantideProduto);
+		
+		return  ie;
+	}
+
 }

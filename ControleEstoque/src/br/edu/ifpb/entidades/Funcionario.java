@@ -18,7 +18,7 @@ public class Funcionario extends Pessoa{
 	
 	@Override
 	public String toString() {
-		return super.toString()+ " Funcionario [ departamento=" + departamento + "]";
+		return getNome().toUpperCase();
 	}
 
 	

@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs.pedido;
+package br.edu.ifpb.views.dialogs.saida;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,23 +19,23 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import br.edu.ifpb.controllers.PedidoProdutoController;
-import br.edu.ifpb.entidades.PedidoProduto;
+import br.edu.ifpb.controllers.SaidaProdutoController;
+import br.edu.ifpb.entidades.SaidaProduto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 
-public class ConsultaPedidoDialog extends javax.swing.JDialog {
+public class ConsultaSaidaDialog extends javax.swing.JDialog {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTable table;
-	private List<PedidoProduto> pedidos = new ArrayList<PedidoProduto>();
+	private List<SaidaProduto> saidas = new ArrayList<SaidaProduto>();
 
 	/**
 	 * Create the application.
 	 */
-	public ConsultaPedidoDialog(JFrame frame) {
+	public ConsultaSaidaDialog(JFrame frame) {
 		super(frame, true);
 		initialize();
 	}
@@ -91,7 +91,7 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog {
 		painelFundo.setSize(500, 500);
 		painelFundo.setLayout(new GridLayout(1, 1));
 
-		getContentPane().add(painelFundo, "3, 6, 5, 8, fill, fill");
+		getContentPane().add(painelFundo, "3, 6, 6, 5, fill, fill");
 
 		criaJTable();
 
@@ -106,7 +106,7 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog {
 
 		table = new JTable();
 		table.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "C\u00F3digo", "Data do Pedido ", "Valor Total", "Fornecedor" }));
+				new String[] { "C\u00F3digo", "Data da Saída ", "Valor Total", "Funcionario" }));
 
 		table.setEditingColumn(0);
 		table.getColumnModel().getColumn(0).setPreferredWidth(20);
@@ -121,17 +121,16 @@ public class ConsultaPedidoDialog extends javax.swing.JDialog {
 		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
 		modelo.setNumRows(0);
 		try {
-			pedidos = new PedidoProdutoController().listarTodos();
+			saidas = new SaidaProdutoController().listarTodos();
 		} catch (ControleEstoqueSqlException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		/* Copia os dados da consulta para a tabela */
-		for (int i = 0; i < pedidos.size(); i++) {
-			modelo.addRow(new Object[] { pedidos.get(i).getPedido().getCodPedido(),
-					pedidos.get(i).getPedido().getDataPedido(), pedidos.get(i).getValorTotal(),
-					pedidos.get(i).getProdutos().get(i).getFornecedor().getNome().toUpperCase() });
+		for (int i = 0; i < saidas.size(); i++) {
+			modelo.addRow(new Object[] { saidas.get(i).getSaida().getCodSaida(),
+					saidas.get(i).getSaida().getDataSaida(), saidas.get(i).getValorTotal(),
+					saidas.get(i).getSaida().getFuncionario().getNome().toUpperCase() });
 		}
 	}
 

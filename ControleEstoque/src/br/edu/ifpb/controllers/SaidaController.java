@@ -14,4 +14,8 @@ public class SaidaController {
 	public ArrayList<Saida> listarTodos() throws ControleEstoqueSqlException {		
 		return SaidaDAO.getInstance().listarTodos();
 	}
+	
+	public Saida consultarByHash(String hash) throws ControleEstoqueSqlException {		
+		return SaidaDAO.getInstance().consultaByHash(hash);
+	}
 }

@@ -341,7 +341,6 @@ public class CadastroUsuarioFrame  {
 		try {
 			departamentos = new DepartamentoController().listarTodos();
 		} catch (ControleEstoqueSqlException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -399,7 +398,6 @@ public class CadastroUsuarioFrame  {
 				try {
 					new FornecedorController().creat(montaFornecedor());
 				} catch (ControleEstoqueSqlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

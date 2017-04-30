@@ -3,6 +3,7 @@ package br.edu.ifpb.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mysql.jdbc.Connection;
@@ -18,7 +19,9 @@ public class FuncionarioDAO implements DAOInterface<Funcionario> {
 	private final String INSERT = "INSERT INTO FUNCIONARIO (NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO) VALUES (?,?,?,?,?,?,?,?,?)";
 	private final String LISTBYLOGIN = "SELECT ID, NOME, CPF, ENDERECO, DATANASCIMENTO,TELEFONE, EMAIL, LOGIN, SENHA, IDDEPARTAMENTO FROM FUNCIONARIO WHERE LOGIN=? AND SENHA=?";
 	private final String UPDATE = "UPDATE FUNCIONARIO SET NOME=?, CPF=?, ENDERECO=?, DATANASCIMENTO=?, TELEFONE=?, EMAIL=?, LOGIN=?, SENHA=?, IDDEPARTAMENTO=? WHERE ID=?";
-	private final String LISTBYID = "SELECT * FROM FORNECEDOR WHERE id=?";
+	private final String LISTBYID = "SELECT * FROM FUNCIONARIO WHERE id=?";
+	private final String LISTALL = "SELECT * FROM FUNCIONARIO";
+
 
 	/*
 	 * private final String UPDATE =
@@ -197,7 +200,43 @@ public class FuncionarioDAO implements DAOInterface<Funcionario> {
 
 	@Override
 	public List<Funcionario> listarTodos() throws ControleEstoqueSqlException {
-		return null;
+		List<Funcionario> funcionarios = null;
+		connection = null;
+
+		try {
+
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			// prepared statement para inserção
+			PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(LISTALL);
+
+			// envia para o Banco e fecha o objeto
+			pstm.execute();
+
+			ResultSet rs = pstm.executeQuery();
+			funcionarios = new ArrayList<Funcionario>();
+			while (rs.next()) {
+
+				Funcionario funcionario = new Funcionario();
+				funcionario.setCodPessoa(rs.getInt("id"));
+				funcionario.setNome(rs.getString("nome"));
+				funcionario.setCpf(rs.getString("cpf"));
+				funcionario.setEndereco(rs.getString("endereco"));
+				funcionario.setDataNascimento(rs.getString("dataNascimento"));
+				funcionario.setTelefone(rs.getString("telefone"));
+				funcionario.setEmail(rs.getString("email"));
+				funcionario.setLogin(rs.getString("login"));
+				funcionario.setSenha(rs.getString("senha"));
+				funcionarios.add(funcionario);
+			}
+
+			pstm.close();
+			connection.close();
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+
+		return funcionarios;
 	}
 
 	@Override

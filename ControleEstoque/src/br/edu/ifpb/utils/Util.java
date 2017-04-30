@@ -1,6 +1,10 @@
 package br.edu.ifpb.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.Calendar;
 
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -19,7 +23,9 @@ public  class  Util {
 	public final static String 	UPDATE_PRD_SUCESS = "Dados do Produto atualizado com Sucesso.";
 	public final static String 	DELETE_PRD_SUCESS = "Produto Excluido com Sucesso.";
 	public final static String 	CADASTRO_PED_SUCESS = "Cadastro do Pedido efetuado com Sucesso.";
-	public final static String  ERRO_AO_BUSCAR_PRODUTO = "Não foi possivel carregar as informações do produto.";  
+	public final static String  ERRO_AO_BUSCAR_PRODUTO = "Não foi possivel carregar as informações do produto.";
+	public final static String 	CADASTRO_SAIDA_SUCESS = "Saída efetuada com Sucesso.";
+
 	
 	public static boolean validarCampos(JTextField campo){
 		if(campo.getText().length() == 0){
@@ -55,5 +61,20 @@ public  class  Util {
 			throw new MensagenException(e1.getMessage());
 		}  
 		
+	}
+	
+	
+	public static String makeSHA1Hash() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance("SHA1");
+		md.reset();
+		byte[] buffer = String.valueOf(Calendar.getInstance().getTimeInMillis()).getBytes("UTF-8");
+		md.update(buffer);
+		byte[] digest = md.digest();
+
+		String hexStr = "";
+		for (int i = 0; i < digest.length; i++) {
+			hexStr += Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return hexStr;
 	}
 }

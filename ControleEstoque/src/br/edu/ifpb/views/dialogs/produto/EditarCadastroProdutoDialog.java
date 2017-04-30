@@ -46,7 +46,7 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 	private List<Fornecedor> fornecedores = null;
 	private int quantidaAtual = 0;
 	private Produto produto = null;
-	private JFrame frame;
+
 	/**
 	 * Create the application.
 	 */
@@ -54,7 +54,6 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		super(frame, true);
 		this.produto = produto;
 		this.quantidaAtual = quantidadeAtual;
-		this.frame = frame;
 		initialize();
 	}
 
@@ -181,8 +180,7 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 			produto.setCategoria(cat);
 			produto.setFornecedor(f);
 			produto.setNome(textFieldNomeProduto.getText().toString());
-			produto.setValorUnitario(
-					Double.parseDouble(textFieldValorUnitario.getText().toString().replaceAll(",", ".")));
+			produto.setValorUnitario(Double.parseDouble(textFieldValorUnitario.getText().toString()));
 
 			try {
 				if (new ProdutoController().update(produto,
@@ -202,7 +200,5 @@ public class EditarCadastroProdutoDialog extends javax.swing.JDialog {
 		textFieldValorUnitario.setText(String.valueOf(produto.getValorUnitario()).replaceAll(".", ","));
 		comboBoxCategoria.setSelectedIndex(produto.getCategoria().getCodCategoria() - 1);
 	}
-
-
 
 }

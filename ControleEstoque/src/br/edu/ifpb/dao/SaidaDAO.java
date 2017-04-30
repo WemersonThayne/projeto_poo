@@ -1,11 +1,9 @@
 package br.edu.ifpb.dao;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -14,13 +12,14 @@ import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.entidades.Saida;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.ConnectionFactory;
-import br.edu.ifpb.utils.Mensagens;
-import br.edu.ifpb.utils.Util;
 
-public class SaidaDAO implements DAOInterface<Saida>{
-	private final String INSERT = "INSERT INTO SAIDA (DATASAIDA, CODFUNCIONARIO) VALUES (?,?)";
+public class SaidaDAO implements DAOInterface<Saida> {
+
+	private final String INSERT = "INSERT INTO SAIDA (DATASAIDA,CODFUNCIONARIO,HASHSAIDA) VALUES (?,?,?)";
 	private final String LIST = "SELECT * FROM SAIDA ORDER BY CODSAIDA";
-	
+	private final String LISTBYID = "SELECT * FROM SAIDA WHERE CODSAIDA=?";
+	private final String LISTBYHASHSAIDA = "SELECT * FROM SAIDA WHERE HASHSAIDA=?";
+
 	private static SaidaDAO instance;
 
 	public static SaidaDAO getInstance() {
@@ -51,8 +50,9 @@ public class SaidaDAO implements DAOInterface<Saida>{
 
 				PreparedStatement pstm = (PreparedStatement) connection.prepareStatement(INSERT);
 
-				pstm.setDate(1, (Date) saida.getDataSaida().getTime());
+				pstm.setDate(1, saida.getDataSaida());
 				pstm.setInt(2, saida.getFuncionario().getCodPessoa());
+				pstm.setString(3, saida.getHashSaida());
 
 				pstm.execute();
 
@@ -60,8 +60,6 @@ public class SaidaDAO implements DAOInterface<Saida>{
 				pstm.close();
 				connection.close();
 
-				
-				new Mensagens(Util.CADASTRO_PED_SUCESS);
 			} catch (SQLException sqle) {
 				throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
 			}
@@ -86,17 +84,17 @@ public class SaidaDAO implements DAOInterface<Saida>{
 
 			while (rs.next()) {
 
+				Saida s = new Saida();
 				Funcionario f = new Funcionario();
-				Saida saida = new Saida();
+				FuncionarioDAO fd = new FuncionarioDAO();
 
-				saida.setCodSaida(rs.getInt("codSaida"));
-				Calendar c = Calendar.getInstance();
-				c.setTime(rs.getDate("dataSaida"));
-				saida.setDataSaida(c);
-				f.setCodPessoa(rs.getInt("codFuncionario"));
-				saida.setFuncionario(f);
+				s.setCodSaida(rs.getInt("codSaida"));
+				s.setDataSaida(rs.getDate("dataSaida"));
+				f = fd.consultaByID(rs.getInt("codFuncionario"));
+				s.setFuncionario(f);
+				s.setHashSaida(rs.getString("hashSaida"));
 
-				saidas.add(saida);
+				saidas.add(s);
 			}
 
 			stmt.close();
@@ -110,13 +108,78 @@ public class SaidaDAO implements DAOInterface<Saida>{
 		return saidas;
 	}
 
+	public Saida consultaByID(int id) throws ControleEstoqueSqlException {
+		Saida s = new Saida();
+		try {
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(LISTBYID);
+			stmt.setInt(1, id);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+
+				Funcionario f = new Funcionario();
+				FuncionarioDAO fd = new FuncionarioDAO();
+
+				s.setCodSaida(rs.getInt("codSaida"));
+				s.setDataSaida(rs.getDate("dataSaida"));
+				f = fd.consultaByID(rs.getInt("codFuncionario"));
+				s.setFuncionario(f);
+				s.setHashSaida(rs.getString("hashSaida"));
+			}
+
+			stmt.close();
+			rs.close();
+			connection.close();
+
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+
+		return s;
+	}
+
+	public Saida consultaByHash(String hash) throws ControleEstoqueSqlException {
+		Saida s = new Saida();
+		try {
+			connection = (Connection) new ConnectionFactory().getConnection();
+
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(LISTBYHASHSAIDA);
+			stmt.setString(1, hash);
+
+			ResultSet rs = stmt.executeQuery();
+
+			if (rs.next()) {
+				Funcionario f = new Funcionario();
+				FuncionarioDAO fd = new FuncionarioDAO();
+
+				s.setCodSaida(rs.getInt("codSaida"));
+				s.setDataSaida(rs.getDate("dataSaida"));
+				f = fd.consultaByID(rs.getInt("codFuncionario"));
+				s.setFuncionario(f);
+				s.setHashSaida(rs.getString("hashSaida"));
+			}
+
+			stmt.close();
+			rs.close();
+			connection.close();
+
+		} catch (SQLException sqle) {
+			throw new ControleEstoqueSqlException(sqle.getErrorCode(), sqle.getLocalizedMessage());
+		}
+
+		return s;
+	}
+
 	@Override
-	public int update(Saida pedido) throws ControleEstoqueSqlException {
+	public int update(Saida t) throws ControleEstoqueSqlException {
 		return 0;
 	}
 
 	@Override
-	public int delete(Saida pedido) throws ControleEstoqueSqlException {
+	public int delete(Saida t) throws ControleEstoqueSqlException {
 		return 0;
 	}
 

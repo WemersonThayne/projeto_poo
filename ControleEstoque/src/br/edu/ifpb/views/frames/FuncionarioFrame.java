@@ -23,6 +23,8 @@ import br.edu.ifpb.views.dialogs.pedido.ConsultaPedidoDialog;
 import br.edu.ifpb.views.dialogs.pedido.FazerPedidoDialog;
 import br.edu.ifpb.views.dialogs.produto.CadastroProdutoDialog;
 import br.edu.ifpb.views.dialogs.produto.ConsultaProdutoDialog;
+import br.edu.ifpb.views.dialogs.saida.ConsultaSaidaDialog;
+import br.edu.ifpb.views.dialogs.saida.RegistraSaidaDialog;
 
 public class FuncionarioFrame{
 
@@ -32,7 +34,8 @@ public class FuncionarioFrame{
 	private ConsultaProdutoDialog consultaProdutoDialog;
 	private FazerPedidoDialog     cadastroPedidoDialog;
 	private ConsultaPedidoDialog  consultaPedidoDialog;
-	
+	private RegistraSaidaDialog   registraSaidaDialog;
+	private ConsultaSaidaDialog   consultaSaidaDialog;
 	
 	
 	/**
@@ -139,6 +142,8 @@ public class FuncionarioFrame{
         abrirConsultaProduto(consultaProduto);
         abrirCadastroPedido(cadastroPedido);
         abrirConsultaPedido(consultaPedido);
+        abrirRegistroSaida(cadastroSaida);
+        abrirConsultaSaida(consultaSaida);
 	}
 
 	private void abrirCadatroProduto(JMenuItem cadastroProduto){
@@ -186,11 +191,40 @@ public class FuncionarioFrame{
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		  
 	    		  consultaPedidoDialog = new ConsultaPedidoDialog(frmFuncionario);
-	    		  consultaPedidoDialog.setBounds(100, 100, 600, 400);
+	    		  consultaPedidoDialog.setBounds(100, 100, 450, 350);
 	    		  consultaPedidoDialog.setTitle("Consultar Pedidos");
 	    		  consultaPedidoDialog.setLocationRelativeTo(null);
 	    		  consultaPedidoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	    		  consultaPedidoDialog.setVisible(true);
 	}});
 	}
+	
+
+	private void abrirRegistroSaida(JMenuItem registroSaida){
+		registroSaida.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  registraSaidaDialog = new RegistraSaidaDialog(frmFuncionario);
+	    		  registraSaidaDialog.setBounds(100, 100, 600, 450);
+	    		  registraSaidaDialog.setTitle("Registrar Saída");
+	    		  registraSaidaDialog.setLocationRelativeTo(null);
+	    		  registraSaidaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  registraSaidaDialog.setVisible(true);
+	}});
+	}
+	
+
+	private void abrirConsultaSaida(JMenuItem consultarSaida){
+		consultarSaida.addActionListener(new ActionListener() {
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  
+	    		  consultaSaidaDialog= new ConsultaSaidaDialog(frmFuncionario);
+	    		  consultaSaidaDialog.setBounds(100, 100, 450, 350);
+	    		  consultaSaidaDialog.setTitle("Consultar Saída");
+	    		  consultaSaidaDialog.setLocationRelativeTo(null);
+	    		  consultaSaidaDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    		  consultaSaidaDialog.setVisible(true);
+	}});
+	}
+	
 }

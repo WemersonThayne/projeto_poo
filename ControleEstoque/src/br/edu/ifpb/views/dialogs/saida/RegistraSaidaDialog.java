@@ -1,4 +1,4 @@
-package br.edu.ifpb.views.dialogs.pedido;
+package br.edu.ifpb.views.dialogs.saida;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,27 +34,29 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import br.edu.ifpb.controllers.FuncionarioController;
 import br.edu.ifpb.controllers.ItemEstoqueController;
-import br.edu.ifpb.controllers.PedidoController;
-import br.edu.ifpb.controllers.PedidoProdutoController;
 import br.edu.ifpb.controllers.ProdutoController;
+import br.edu.ifpb.controllers.SaidaController;
+import br.edu.ifpb.controllers.SaidaProdutoController;
 import br.edu.ifpb.entidades.Estoque;
+import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.entidades.ItemEstoque;
-import br.edu.ifpb.entidades.Pedido;
-import br.edu.ifpb.entidades.PedidoProduto;
 import br.edu.ifpb.entidades.Produto;
+import br.edu.ifpb.entidades.Saida;
+import br.edu.ifpb.entidades.SaidaProduto;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
 import br.edu.ifpb.utils.Mensagens;
 import br.edu.ifpb.utils.Util;
 
-public class FazerPedidoDialog extends JDialog {
+public class RegistraSaidaDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JTable table;
-	private JFrame frame;
 	private JButton btnFinalizarPedido;
 	private JButton btnAdicinarProduto;
-	private JButton btnVisualiarLista;
+
+	private JComboBox<Funcionario> comboBoxFuncionario;
 
 	private JTextField textFieldNomeProduto;
 	private JTextField textFieldNomeProdutoEscolhido;
@@ -61,18 +64,19 @@ public class FazerPedidoDialog extends JDialog {
 	private JTextField textFieldQuantidadeProduto;
 
 	private List<Produto> produtos = new ArrayList<Produto>();
-	private List<Produto> produtosPedido = new ArrayList<Produto>();
+	private List<Produto> produtosSaida = new ArrayList<Produto>();
 	private Estoque estoque;
 	private Set<ItemEstoque> chaves = new HashSet<ItemEstoque>();
 	private List<ItemEstoque> itens = new ArrayList<ItemEstoque>();
-	private List<ItemEstoque> itensPedido = new ArrayList<ItemEstoque>();
+	private List<ItemEstoque> itensSaida = new ArrayList<ItemEstoque>();
+
+	private List<Funcionario> funcionarios = null;
 
 	/**
 	 * Create the application.
 	 */
-	public FazerPedidoDialog(JFrame frame) {
+	public RegistraSaidaDialog(JFrame frame) {
 		super(frame, true);
-		this.frame = frame;
 		initialize();
 	}
 
@@ -96,11 +100,11 @@ public class FazerPedidoDialog extends JDialog {
 						FormSpecs.DEFAULT_ROWSPEC, FormSpecs.RELATED_GAP_ROWSPEC,
 						RowSpec.decode("max(27dlu;default):grow"), }));
 
-		JLabel lblCadastroProdutos = new JLabel("Fazer Pedido");
+		JLabel lblCadastroProdutos = new JLabel("Registrar Sa\u00EDda de Produto");
 		lblCadastroProdutos.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCadastroProdutos.setBackground(Color.BLACK);
 		lblCadastroProdutos.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		getContentPane().add(lblCadastroProdutos, "4, 2, center, top");
+		getContentPane().add(lblCadastroProdutos, "4, 2, 1, 2, fill, top");
 
 		JLabel lblNewLabel = new JLabel("Produto:");
 		getContentPane().add(lblNewLabel, "3, 6, left, default");
@@ -155,30 +159,29 @@ public class FazerPedidoDialog extends JDialog {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBackground(new Color(0, 0, 2));
 		getContentPane().add(separator_1, "3, 22, 4, 1");
+								
+								JLabel lblFuncionario = new JLabel("Funcionario:");
+								getContentPane().add(lblFuncionario, "3, 24, fill, default");
+						
+								comboBoxFuncionario = new JComboBox<Funcionario>();
+								getContentPane().add(comboBoxFuncionario, "4, 24, fill, default");
+				
+						btnAdicinarProduto = new JButton("Add Produto ");
+						btnAdicinarProduto.setEnabled(false);
+						getContentPane().add(btnAdicinarProduto, "3, 26, fill, default");
+		
+				btnFinalizarPedido = new JButton("Finalizar Sa\u00EDda de Produto");
+				getContentPane().add(btnFinalizarPedido, "4, 26, center, default");
+				btnFinalizarPedido.setEnabled(false);
+				
+						btnFinalizarPedido.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								finalizarSaida();
+							}
+						});
 
-		btnFinalizarPedido = new JButton("Finalizar Pedido");
-		getContentPane().add(btnFinalizarPedido, "3, 24, center, default");
-		btnFinalizarPedido.setEnabled(false);
-
-		btnFinalizarPedido.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				finalizarPedido();
-			}
-		});
-
-		btnAdicinarProduto = new JButton("Adicinar Produto na Lista");
-		btnAdicinarProduto.setEnabled(false);
-		getContentPane().add(btnAdicinarProduto, "4, 24, center, default");
-
-		btnVisualiarLista = new JButton("Visualiar Lista");
-		getContentPane().add(btnVisualiarLista, "6, 24");
-
-		btnVisualiarLista.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				mostrarListaVisualizacao(produtosPedido, itensPedido);
-			}
-		});
 		butaoAdiconarProduto();
+		montarFuncionario();
 
 		btnNewButtonPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -186,11 +189,10 @@ public class FazerPedidoDialog extends JDialog {
 				montarTable();
 			}
 		});
-
+		
 	}
 
 	private int linha = -1;
-
 	private void getClickLinhaTabela() {
 		table.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
@@ -237,18 +239,17 @@ public class FazerPedidoDialog extends JDialog {
 				try {
 					item =  (ItemEstoque) itens.get(i).clone();
 				} catch (CloneNotSupportedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				item.setQuantideProduto(Integer.parseInt(textFieldQuantidadeProduto.getText().toString()));
 			}
 		}
 
-		if (produtosPedido.contains(produtoPedido)) {
+		if (produtosSaida.contains(produtoPedido)) {
 			new Mensagens("Produto já adicionado na lista");
 		} else {
-			produtosPedido.add(produtoPedido);
-			itensPedido.add(item);
+			produtosSaida.add(produtoPedido);
+			itensSaida.add(item);
 		}
 
 		textFieldNomeProdutoEscolhido.setText("");
@@ -302,51 +303,45 @@ public class FazerPedidoDialog extends JDialog {
 		}
 	}
 
-	private void mostrarListaVisualizacao(List<Produto> produtos, List<ItemEstoque> itens) {
-		VisualizarListaProdutoPedidoDialog visualizarLista = new VisualizarListaProdutoPedidoDialog(frame, produtos,
-				itens);
-		visualizarLista.setBounds(100, 100, 400, 300);
-		visualizarLista.setTitle("Resumo do Pedido");
-		visualizarLista.setLocationRelativeTo(null);
-		visualizarLista.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		visualizarLista.setVisible(true);
-	}
 
-	private void finalizarPedido() {
-		Pedido pedido = new Pedido();
-		pedido.setDataPedido(Date.valueOf(LocalDate.now()));
+	private void finalizarSaida() {
+		Saida saida = new Saida();
+		saida.setDataSaida(Date.valueOf(LocalDate.now()));
+		Funcionario f = (Funcionario) comboBoxFuncionario.getSelectedItem();
+		saida.setFuncionario(f);
+		
 		try {
-			pedido.setHashPedido(Util.makeSHA1Hash());
+			saida.setHashSaida(Util.makeSHA1Hash());
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
 		try {
 
-			for (int i = 0; i < itensPedido.size(); i++) {
+			for (int i = 0; i < itensSaida.size(); i++) {
 				for (int j = 0; j < itens.size(); j++) {
-					if (itens.get(j).getIdEstoque() == itensPedido.get(i).getIdEstoque()) {
-						itensPedido.get(i).setIdProduto(produtosPedido.get(i).getCodProduto());
-						int quant = itensPedido.get(i).getQuantideProduto();
-						itensPedido.get(i).setQuantideProduto(itens.get(j).getQuantideProduto() + quant);
-						new ItemEstoqueController().update(itensPedido.get(i));
+					if (itens.get(j).getIdEstoque() == itensSaida.get(i).getIdEstoque()) {
+						itensSaida.get(i).setIdProduto(produtosSaida.get(i).getCodProduto());
+						int quant = itensSaida.get(i).getQuantideProduto();
+						itensSaida.get(i).setQuantideProduto(itens.get(j).getQuantideProduto() - quant);
+						new ItemEstoqueController().update(itensSaida.get(i));
 					}
 				}
 			}
 
-			new PedidoController().creat(pedido);
-			pedido = new PedidoController().consultarByHash(pedido.getHashPedido());
+			SaidaController saidaController = new SaidaController();
+			saidaController.creat(saida);
+			saida = saidaController.consultarByHash(saida.getHashSaida());
 
-			if (pedido != null) {
+			if (saida != null) {
 
-				PedidoProduto pp = new PedidoProduto();
-				pp.setPedido(pedido);
-				pp.setProdutos(produtosPedido);
-				pp.setQuantProdutos(produtosPedido.size());
-				pp.setValorTotal(getValorTotal() * produtosPedido.size());
+				SaidaProduto sp = new SaidaProduto();
+				sp.setSaida(saida);
+				sp.setProdutos(produtosSaida);
+				sp.setQuantProdutos(produtosSaida.size());
+				sp.setValorTotal(getValorTotal() * produtosSaida.size());
 
-				new PedidoProdutoController().creat(pp);
+				new SaidaProdutoController().creat(sp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -365,10 +360,27 @@ public class FazerPedidoDialog extends JDialog {
 
 	private Double getValorTotal() {
 		Double valorTotal = 0D;
-		for (Produto p : produtosPedido) {
+		for (Produto p : produtosSaida) {
 			valorTotal += p.getValorUnitario();
 		}
 		return valorTotal;
 	}
 
+	
+	
+	/* Preenche o combo com os fornecedores cadastrados */
+	private void montarFuncionario() {
+		funcionarios = new ArrayList<Funcionario>();
+
+		try {
+			funcionarios = new FuncionarioController().listarTodos();
+		} catch (ControleEstoqueSqlException e1) {
+			e1.printStackTrace();
+		}
+
+		for (Funcionario funci : funcionarios) {
+			comboBoxFuncionario.addItem(funci);
+		}
+
+	}
 }

@@ -1,5 +1,7 @@
 package br.edu.ifpb.controllers;
 
+import java.util.List;
+
 import br.edu.ifpb.dao.FuncionarioDAO;
 import br.edu.ifpb.entidades.Funcionario;
 import br.edu.ifpb.exceptions.ControleEstoqueSqlException;
@@ -16,6 +18,10 @@ public class FuncionarioController {
 
 	public int update(Funcionario funcionario) throws ControleEstoqueSqlException {		
 		return FuncionarioDAO.getInstance().update(funcionario);
+	}
+	
+	public List<Funcionario> listarTodos() throws ControleEstoqueSqlException{
+		return FuncionarioDAO.getInstance().listarTodos();
 	}
 
 }

@@ -1,51 +1,42 @@
 package br.edu.ifpb.entidades;
 
-import java.util.Calendar;
+import java.sql.Date;
 
 public class Saida {
 
 	private int codSaida;
-	private Calendar dataSaida;
+	private Date dataSaida;
 	private Funcionario funcionario;
+	private String hashSaida;
 	
-	public Saida(){
-	}	
-
-	public Saida(int code,  Calendar data, Funcionario funcionario){
-		setCodSaida(code);
-		setDataSaida(data);
-		setFuncionario(funcionario);
-	}
-
 	public int getCodSaida() {
 		return codSaida;
 	}
-
 	public void setCodSaida(int codSaida) {
 		this.codSaida = codSaida;
 	}
-
-
-	public Calendar getDataSaida() {
+	public Date getDataSaida() {
 		return dataSaida;
 	}
-
-	public void setDataSaida(Calendar dataSaida) {
+	public void setDataSaida(Date dataSaida) {
 		this.dataSaida = dataSaida;
 	}
-
 	public Funcionario getFuncionario() {
 		return funcionario;
 	}
-
 	public void setFuncionario(Funcionario funcionario) {
 		this.funcionario = funcionario;
 	}
-
+	public String getHashSaida() {
+		return hashSaida;
+	}
+	public void setHashSaida(String hashSaida) {
+		this.hashSaida = hashSaida;
+	}
 	@Override
 	public String toString() {
-		return "Saida [codSaida=" + codSaida + ", dataSaida=" + dataSaida + ", funcionario="
-				+ funcionario + "]";
+		return "Saida [codSaida=" + codSaida + ", dataSaida=" + dataSaida + ", funcionario=" + funcionario
+				+ ", hashSaida=" + hashSaida + "]";
 	}
 	
 }
